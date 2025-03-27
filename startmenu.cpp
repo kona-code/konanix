@@ -19,10 +19,10 @@ void StartMenuManager::Show()
     if (isVisible) return;
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    int menuWidth = 500;
-    int menuHeight = 400;
+    int menuWidth = 1280;
+    int menuHeight = 128;
     int posX = (screenWidth - menuWidth) / 2;
-    int posY = screenHeight - menuHeight - 50; // 50 pixels above bottom
+    int posY = screenHeight - menuHeight - 48; // px above bottom
     hwndStartMenu = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, L"STATIC", L"start menu",
         WS_POPUP | WS_BORDER, posX, posY, menuWidth, menuHeight, hwndParent, nullptr, hInstance, nullptr);
     if (hwndStartMenu) {

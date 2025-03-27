@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dcompmanager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hotkeyhandler.h" />
     <ClInclude Include="konanix.h" />
+    <ClInclude Include="magnifiermanager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="screenmanager.h" />
     <ClInclude Include="startmenu.h" />
@@ -137,8 +139,10 @@
     <ClInclude Include="windowmanager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dcompmanager.cpp" />
     <ClCompile Include="hotkeyhandler.cpp" />
     <ClCompile Include="konanix.cpp" />
+    <ClCompile Include="magnifiermanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="screenmanager.cpp" />
     <ClCompile Include="startmenu.cpp" />

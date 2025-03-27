@@ -39,6 +39,12 @@
     <ClInclude Include="startmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dcompmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="magnifiermanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="konanix.cpp">
@@ -57,6 +63,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="startmenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dcompmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="magnifiermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

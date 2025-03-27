@@ -4,8 +4,9 @@
 #include "startmenu.h"
 #include "screenmanager.h"
 #include "hotkeyhandler.h"
+#include "dcompmanager.h"
 
-// class that manages the custom start menu and screen manipulation
+// class that manages the custom start menu, overlay, and screen manipulation
 class WindowManager {
 public:
     WindowManager(HINSTANCE hInstance);
@@ -15,11 +16,16 @@ public:
     void RegisterHotkey();
     void ToggleStartMenu(bool isPressed);
     void Shutdown();
+    // functions to control the overlay scaling
+    void ActivateOverlay();
+    void DeactivateOverlay();
 
 private:
     HINSTANCE hInstance;
-    HWND hwnd; // main window handle (unused in this demo)
+    HWND hwnd; // unused main window handle in this sample
     StartMenuManager* startMenuManager;
     ScreenManager* screenManager;
     HotkeyHandler* hotkeyHandler;
+    //DCompManager* dcompManager;
+    bool overlayActive;
 };

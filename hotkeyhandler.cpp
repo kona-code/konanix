@@ -1,5 +1,5 @@
 #include "hotkeyhandler.h"
-#include "windowmanager.h"  // include the full definition of WindowManager
+#include "windowmanager.h"
 
 // define the static members
 WindowManager* HotkeyHandler::s_pWindowManager = nullptr;
