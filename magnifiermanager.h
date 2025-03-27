@@ -1,25 +1,31 @@
 #pragma once
-#pragma once
 #include <windows.h>
+#include <magnification.h>
+#include <math.h>
 
 class MagnifierManager {
 public:
     MagnifierManager();
     ~MagnifierManager();
 
-    // initialize the magnifier window covering the entire screen
     bool Initialize(HINSTANCE hInstance);
-    // apply a scale transform (for example, 0.9 for 90% scale)
+	bool IsInitialized() const;
     bool ApplyScaleTransform(float scale);
-    // remove any transform (restore 100% scale)
     bool RemoveScaleTransform();
-    // show the magnifier overlay
     void Show();
-    // hide the magnifier overlay
     void Hide();
+
+    void AnimateScale(float targetScale, int durationMs = 100);
 
 private:
     HWND m_hwndMagnifier;
     HWND m_hwndOverlay;
     bool m_initialized;
+    float m_currentScale;
+    float m_targetScale;
+    int m_animationSteps;
+    int m_currentStep;
+
+    static VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+    void StepScale();
 };

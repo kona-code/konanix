@@ -6,10 +6,13 @@ MagnifierManager g_magnifierManager; // global or member variable
 
 void WindowManager::ToggleStartMenu(bool isPressed) {
     if (isPressed) {
-        if (!g_magnifierManager.Initialize(hInstance)) {
-            MessageBox(NULL, L"failed to initialize magnifier", L"error", MB_OK | MB_ICONERROR);
-        }
-        g_magnifierManager.ApplyScaleTransform(0.8f);
+            if (!g_magnifierManager.Initialize(hInstance)) {
+                MessageBox(NULL, L"Failed to initialize magnifier", L"Error", MB_OK | MB_ICONERROR);
+                return;
+            }
+
+        g_magnifierManager.AnimateScale(0.8f, 100);  // Smooth zoom-in
+
         if (startMenuManager->IsVisible()) {
             startMenuManager->Hide();
             screenManager->RestoreScreen();
@@ -18,14 +21,19 @@ void WindowManager::ToggleStartMenu(bool isPressed) {
             startMenuManager->Show();
             screenManager->ShrinkAndCenterScreen();
         }
-        // show custom start menu at bottom center (existing code)
+
     }
     else {
-        g_magnifierManager.RemoveScaleTransform();
-		g_magnifierManager.Hide();
-        // hide custom start menu (existing code)
+        g_magnifierManager.AnimateScale(1.0f, 80);
+
+        // delay to allow animation to complete
+        SetTimer(NULL, 2, 310, [](HWND, UINT, UINT_PTR, DWORD) {
+            g_magnifierManager.Hide();
+            KillTimer(NULL, 2);
+            });
     }
 }
+
 
 /*void WindowManager::ToggleStartMenu(bool isPressed)
 {

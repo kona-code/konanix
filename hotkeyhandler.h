@@ -17,4 +17,5 @@ private:
     // static pointer so that the static callback can access the WindowManager instance
     static WindowManager* s_pWindowManager;
     static bool isWindowsKeyPressed;
+    static bool isActive;
 };

@@ -4,6 +4,7 @@
 // define the static members
 WindowManager* HotkeyHandler::s_pWindowManager = nullptr;
 bool HotkeyHandler::isWindowsKeyPressed = false;
+bool HotkeyHandler::isActive = false;
 
 HotkeyHandler::HotkeyHandler(HINSTANCE hInst, WindowManager* windowManager)
     : hInstance(hInst)
@@ -21,29 +22,30 @@ bool HotkeyHandler::Initialize() {
 }
 
 void HotkeyHandler::RegisterHotkey() {
-    // optional: additional hotkey registration can be done here
 }
 
 LRESULT CALLBACK HotkeyHandler::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode == HC_ACTION) {
         KBDLLHOOKSTRUCT* keyStruct = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
-        if (wParam == WM_KEYDOWN || wParam == WM_KEYUP) {
-            if (keyStruct->vkCode == VK_LWIN || keyStruct->vkCode == VK_RWIN) {
-                if (wParam == WM_KEYDOWN && !isWindowsKeyPressed) {
-                    isWindowsKeyPressed = true;
-                    if (HotkeyHandler::s_pWindowManager) {
-                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(true);
-                    }
+        if (keyStruct->vkCode == VK_LWIN || keyStruct->vkCode == VK_RWIN) {
+            if (wParam == WM_KEYDOWN && !isWindowsKeyPressed) {
+                isWindowsKeyPressed = true;
+                if (HotkeyHandler::s_pWindowManager && !isActive) {
+					isActive = true;
+                    HotkeyHandler::s_pWindowManager->ToggleStartMenu(true);
                 }
-                else if (wParam == WM_KEYUP && isWindowsKeyPressed) {
-                    isWindowsKeyPressed = false;
-                    if (HotkeyHandler::s_pWindowManager) {
-                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(false);
-                    }
+                else if(HotkeyHandler::s_pWindowManager && isActive) {
+					isActive = false;
+                    HotkeyHandler::s_pWindowManager->ToggleStartMenu(false);
                 }
-                return 1; // block default behavior
+            } 
+            else if (wParam == WM_KEYUP) {
+                isWindowsKeyPressed = false;
+
             }
+            return 1; // block windows key default behavior
         }
     }
     return CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
+
