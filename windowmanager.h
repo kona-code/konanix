@@ -18,7 +18,7 @@ public:
 
 private:
     HINSTANCE hInstance;
-    HWND hwnd; // not used for a main window in this project
+    HWND hwnd; // main window handle (unused in this demo)
     StartMenuManager* startMenuManager;
     ScreenManager* screenManager;
     HotkeyHandler* hotkeyHandler;

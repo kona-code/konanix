@@ -1,27 +1,27 @@
 #include "hotkeyhandler.h"
-#include "windowmanager.h" // Include the full definition
+#include "windowmanager.h"  // include the full definition of WindowManager
 
-// Define static members
+// define the static members
 WindowManager* HotkeyHandler::s_pWindowManager = nullptr;
 bool HotkeyHandler::isWindowsKeyPressed = false;
 
 HotkeyHandler::HotkeyHandler(HINSTANCE hInst, WindowManager* windowManager)
     : hInstance(hInst)
 {
-    // Save the pointer in the static member
     s_pWindowManager = windowManager;
 }
 
 bool HotkeyHandler::Initialize() {
+    // set the global keyboard hook
     if (SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInstance, 0) == nullptr) {
-        MessageBox(NULL, L"Failed to install global keyboard hook!", L"Error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, L"failed to install global keyboard hook", L"error", MB_OK | MB_ICONERROR);
         return false;
     }
     return true;
 }
 
 void HotkeyHandler::RegisterHotkey() {
-    // Optional: Register additional hotkeys if needed.
+    // optional: additional hotkey registration can be done here
 }
 
 LRESULT CALLBACK HotkeyHandler::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -31,17 +31,17 @@ LRESULT CALLBACK HotkeyHandler::KeyboardProc(int nCode, WPARAM wParam, LPARAM lP
             if (keyStruct->vkCode == VK_LWIN || keyStruct->vkCode == VK_RWIN) {
                 if (wParam == WM_KEYDOWN && !isWindowsKeyPressed) {
                     isWindowsKeyPressed = true;
-                    if (s_pWindowManager) {
-                        s_pWindowManager->ToggleStartMenu(true); // Show custom start menu
+                    if (HotkeyHandler::s_pWindowManager) {
+                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(true);
                     }
                 }
                 else if (wParam == WM_KEYUP && isWindowsKeyPressed) {
                     isWindowsKeyPressed = false;
-                    if (s_pWindowManager) {
-                        s_pWindowManager->ToggleStartMenu(false); // Hide custom start menu
+                    if (HotkeyHandler::s_pWindowManager) {
+                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(false);
                     }
                 }
-                return 1;  // Block the default behavior.
+                return 1; // block default behavior
             }
         }
     }

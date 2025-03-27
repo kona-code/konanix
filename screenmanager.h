@@ -1,8 +1,7 @@
 #pragma once
-
 #include <windows.h>
 
-// class that manages the screen manipulation
+// class that manages screen manipulation
 class ScreenManager {
 public:
     ScreenManager();
@@ -10,7 +9,6 @@ public:
     void RestoreScreen();
 
 private:
-    // original work area is stored here if needed
     RECT originalRect;
     bool isShrunk;
 };

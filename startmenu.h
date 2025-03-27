@@ -1,12 +1,11 @@
 #pragma once
-
 #include <windows.h>
 
+// class that manages the custom start menu window
 class StartMenuManager {
 public:
     StartMenuManager(HINSTANCE hInstance, HWND hwndParent);
     ~StartMenuManager();
-
     void Show();
     void Hide();
     bool IsVisible() const;

@@ -1,25 +1,30 @@
 #include "screenmanager.h"
-#include <Windows.h>
+#include <windows.h>
 
-ScreenManager::ScreenManager() {}
-
-void ScreenManager::ShrinkAndCenterScreen() {
-    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
-    // Shrink screen by 10%
-    int newWidth = static_cast<int>(screenWidth * 0.9);
-    int newHeight = static_cast<int>(screenHeight * 0.9);
-
-    // Center the screen
-    int centerX = (screenWidth - newWidth) / 2;
-    int centerY = (screenHeight - newHeight) / 2;
-
-    // Apply the new size and position to the desktop
-    SetWindowPos(GetDesktopWindow(), HWND_TOPMOST, centerX, centerY, newWidth, newHeight, SWP_NOACTIVATE);
+ScreenManager::ScreenManager() : isShrunk(false)
+{
+    // get the original work area
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &originalRect, 0);
 }
 
-void ScreenManager::RestoreScreen() {
-    // Restore the screen to original size
-    SetWindowPos(GetDesktopWindow(), HWND_TOPMOST, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_NOACTIVATE);
+void ScreenManager::ShrinkAndCenterScreen()
+{
+    if (isShrunk) return; // prevent re-shrinking
+
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    int newWidth = static_cast<int>(screenWidth * 0.9);
+    int newHeight = static_cast<int>(screenHeight * 0.9);
+    int centerX = (screenWidth - newWidth) / 2;
+    int centerY = (screenHeight - newHeight) / 2;
+    RECT newWorkArea = { centerX, centerY, centerX + newWidth, centerY + newHeight };
+    SystemParametersInfo(SPI_SETWORKAREA, 0, &newWorkArea, SPIF_SENDCHANGE);
+    isShrunk = true;
+}
+
+void ScreenManager::RestoreScreen()
+{
+    if (!isShrunk) return;
+    SystemParametersInfo(SPI_SETWORKAREA, 0, &originalRect, SPIF_SENDCHANGE);
+    isShrunk = false;
 }
