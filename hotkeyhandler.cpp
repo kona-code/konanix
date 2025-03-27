@@ -1,8 +1,10 @@
 #include "hotkeyhandler.h"
 #include "windowmanager.h"
+#include <iostream>
 
 // define the static members
 WindowManager* HotkeyHandler::s_pWindowManager = nullptr;
+HHOOK HotkeyHandler::s_hHook = nullptr;
 bool HotkeyHandler::isWindowsKeyPressed = false;
 bool HotkeyHandler::isActive = false;
 
@@ -13,39 +15,78 @@ HotkeyHandler::HotkeyHandler(HINSTANCE hInst, WindowManager* windowManager)
 }
 
 bool HotkeyHandler::Initialize() {
-    // set the global keyboard hook
-    if (SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInstance, 0) == nullptr) {
-        MessageBox(NULL, L"failed to install global keyboard hook", L"error", MB_OK | MB_ICONERROR);
+    s_hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, nullptr, 0);
+    if (!s_hHook) {
+        MessageBox(NULL, L"Failed to install global keyboard hook", L"Error", MB_OK | MB_ICONERROR);
         return false;
     }
     return true;
 }
 
-void HotkeyHandler::RegisterHotkey() {
+void HotkeyHandler::Unhook() {
+    if (s_hHook) {
+        UnhookWindowsHookEx(s_hHook);
+        s_hHook = nullptr;
+    }
 }
+
+void ReleaseWindowsKey() {
+    // Create an INPUT structure to send a fake key release
+    INPUT input = { 0 };
+    input.type = INPUT_KEYBOARD;
+    input.ki.wVk = VK_LWIN;  // Left Windows Key
+    input.ki.dwFlags = KEYEVENTF_KEYUP;  // Release the key
+
+    // Send the event
+    SendInput(1, &input, sizeof(INPUT));
+
+    input.ki.wVk = VK_RWIN;  // Right Windows Key (optional)
+    SendInput(1, &input, sizeof(INPUT));
+}
+
 
 LRESULT CALLBACK HotkeyHandler::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode == HC_ACTION) {
         KBDLLHOOKSTRUCT* keyStruct = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
-        if (keyStruct->vkCode == VK_LWIN || keyStruct->vkCode == VK_RWIN) {
-            if (wParam == WM_KEYDOWN && !isWindowsKeyPressed) {
-                isWindowsKeyPressed = true;
-                if (HotkeyHandler::s_pWindowManager && !isActive) {
-					isActive = true;
-                    HotkeyHandler::s_pWindowManager->ToggleStartMenu(true);
-                }
-                else if(HotkeyHandler::s_pWindowManager && isActive) {
-					isActive = false;
-                    HotkeyHandler::s_pWindowManager->ToggleStartMenu(false);
-                }
-            } 
-            else if (wParam == WM_KEYUP) {
-                isWindowsKeyPressed = false;
 
+        // Check if it's a Windows key (Left or Right)
+        if (keyStruct->vkCode == VK_LWIN || keyStruct->vkCode == VK_RWIN) {
+
+            if (wParam == WM_KEYDOWN) {
+                // If the Windows key is pressed, block its default action (Start menu)
+                if (!isWindowsKeyPressed) {
+                    isWindowsKeyPressed = true;  // Set flag to indicate key is pressed
+                    if (HotkeyHandler::s_pWindowManager && !isActive) {
+                        isActive = true;
+                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(true);  // Activate custom behavior
+                    }
+                    else if (HotkeyHandler::s_pWindowManager && isActive) {
+                        isActive = false;
+                        HotkeyHandler::s_pWindowManager->ToggleStartMenu(false);  // Deactivate custom behavior
+                    }
+
+                    return 1; // Block default Windows key behavior (Start menu)
+                }
             }
-            return 1; // block windows key default behavior
+            else if (wParam == WM_KEYUP) {
+                // If the Windows key is released, we prevent it from doing anything.
+                if (isWindowsKeyPressed) {
+                    isWindowsKeyPressed = false; // Reset flag for key release
+
+                    // Simulate the release of the Windows key to inform Windows
+                    INPUT input = { 0 };
+                    input.type = INPUT_KEYBOARD;
+                    input.ki.wVk = keyStruct->vkCode;  // Windows Key (Left or Right)
+                    input.ki.dwFlags = KEYEVENTF_KEYUP;  // Release the key
+                    SendInput(1, &input, sizeof(INPUT));
+
+                    // Block the default Windows key behavior
+                    return 1; // Prevent any default behavior from occurring
+                }
+            }
         }
     }
+
+    // Allow all other keys to pass through
     return CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
-

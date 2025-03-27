@@ -90,7 +90,7 @@ void WindowManager::Run()
 
 void WindowManager::RegisterHotkey()
 {
-    hotkeyHandler->RegisterHotkey();
+    
 }
 
 
