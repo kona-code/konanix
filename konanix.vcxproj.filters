@@ -13,37 +13,82 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\environment">
+      <UniqueIdentifier>{0c0ba0ec-f9da-40dd-b03c-050f5b3a1a56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\windows modules">
+      <UniqueIdentifier>{41755700-cee2-4a21-a9d4-b9ac43208f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\environment">
+      <UniqueIdentifier>{a0686d01-d9fb-4773-b72c-48c62b7bd3a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\environment\interface">
+      <UniqueIdentifier>{51b76d92-59dc-48fd-85a7-80c5f1fb5e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\environment\interface">
+      <UniqueIdentifier>{2b085416-c5d5-4a67-9952-6c46b1ee3f96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\environment\functions">
+      <UniqueIdentifier>{baa08c5f-901e-4fa8-9e41-de2070094d18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\environment\functions">
+      <UniqueIdentifier>{8cd74b59-7d6c-40d6-9f2f-9ddef5666c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\environment\tools">
+      <UniqueIdentifier>{5fc4560c-108e-4fe1-9012-f766afd75564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\environment\tools">
+      <UniqueIdentifier>{2a07b2e9-b2b5-4178-88b6-16e44fbd8e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utility">
+      <UniqueIdentifier>{b3775bcc-9f85-43ac-b831-efbecfd8cb29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utility">
+      <UniqueIdentifier>{0f154af0-f677-4894-9946-1aa423c42c62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="konanix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="windowmanager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files\windows modules</Filter>
     </ClInclude>
-    <ClInclude Include="hotkeyhandler.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\windows modules</Filter>
     </ClInclude>
-    <ClInclude Include="screenmanager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\windows modules</Filter>
     </ClInclude>
-    <ClInclude Include="startmenu.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TaskbarManager.h">
+      <Filter>Header Files\environment\interface</Filter>
     </ClInclude>
-    <ClInclude Include="dcompmanager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Header Files\environment\interface</Filter>
     </ClInclude>
-    <ClInclude Include="magnifiermanager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ExplorerIntegration.h">
+      <Filter>Header Files\environment\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="PerformanceMonitor.h">
+      <Filter>Header Files\environment\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\environment\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeManager.h">
+      <Filter>Header Files\environment\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginManager.h">
+      <Filter>Header Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="HotKeyHandler.h">
+      <Filter>Header Files\environment\functions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,23 +98,35 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="windowmanager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Source Files\environment\interface</Filter>
     </ClCompile>
-    <ClCompile Include="hotkeyhandler.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TaskbarManager.cpp">
+      <Filter>Source Files\environment\interface</Filter>
     </ClCompile>
-    <ClCompile Include="screenmanager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ExplorerIntegration.cpp">
+      <Filter>Source Files\environment\functions</Filter>
     </ClCompile>
-    <ClCompile Include="startmenu.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="PerformanceMonitor.cpp">
+      <Filter>Source Files\environment\tools</Filter>
     </ClCompile>
-    <ClCompile Include="dcompmanager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files\environment\tools</Filter>
     </ClCompile>
-    <ClCompile Include="magnifiermanager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ThemeManager.cpp">
+      <Filter>Source Files\environment\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginManager.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="HotKeyHandler.cpp">
+      <Filter>Source Files\environment\functions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,32 +1,43 @@
 #pragma once
 
 #include <windows.h>
-#include <string>
-#include "screenmanager.h"
+#include "menumanager.h"
+#include "taskbarmanager.h"
+#include "explorerintegration.h"
+#include "performancemonitor.h"
+#include "settings.h"
+#include "thememanager.h"
+#include "hotkeyhandler.h"
+#include "TaskbarManager.h"
 
-class Konanix {
+
+class konanix {
 public:
-    explicit Konanix(HINSTANCE hInst);
-    ~Konanix();
+    explicit konanix(HINSTANCE hInst);
+    ~konanix();
 
-    bool Initialize();
-    void Run();
+    bool initialize();
+    void run();
+    void shutdown();
+    void registerHotkey();
+    void toggleStartMenu(bool pressed);
 
 private:
     HINSTANCE hInstance;
-    HWND hwnd;
-    bool isWindowsKeyPressed;
-    bool isStartMenuVisible;
-    HWND startMenuWnd;
-    ScreenManager screenManager;
+    HWND hwnd; // main window handle
+    menumanager* menuManager;
+    taskbarmanager* taskbarManager;
+    explorerintegration* explorerIntegration;
+    performancemonitor* performanceMonitor;
+    settingsmanager* settingsManager;
+    thememanager* themeManager;
+    hotkeyhandler* hotkeyHandler;
 
-    void RegisterHotkey();
-    void ToggleStartMenu(bool pressed);
-    void CreateStartMenu();
-    void ManipulateExplorerMenu(bool hide);
-    void CloseStartMenu();
+    // helper functions
+    void createStartMenu();
+    void closeStartMenu();
+    void manipulateExplorerMenu(bool hide);
 
-    static LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static Konanix* pKonanixInstance;
+    // static pointer for keyboard hook callback
+    static konanix* pKonanixInstance;
 };

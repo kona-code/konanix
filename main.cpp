@@ -1,16 +1,17 @@
 #include <windows.h>
-#include "windowmanager.h"
+#include "konanix.h"
 
 // main entry point
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int)
 {
-    WindowManager windowManager(hInstance);
-    if (!windowManager.Initialize()) {
+    // create an instance of konanix and initialize it
+    konanix app(hInstance);
+    if (!app.initialize()) {
         return -1;
     }
 
-    windowManager.RegisterHotkey();
-    windowManager.Run();
-    windowManager.Shutdown();
+    // run the main message loop
+    app.run();
+    app.shutdown();
     return 0;
 }

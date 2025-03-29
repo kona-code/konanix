@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -102,12 +108,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./opengl/glew/include;./opengl/glfw/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>./opengl/glew/glew32s.lib;./opengl/glfw/glfw3.lib;./opengl/glfw/glfw3_mt.lib;./opengl/glfw/glfw3dll.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,26 +136,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="dcompmanager.h" />
+    <ClInclude Include="ExplorerIntegration.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="hotkeyhandler.h" />
+    <ClInclude Include="HotKeyHandler.h" />
     <ClInclude Include="konanix.h" />
-    <ClInclude Include="magnifiermanager.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="PerformanceMonitor.h" />
+    <ClInclude Include="PluginManager.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="screenmanager.h" />
-    <ClInclude Include="startmenu.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="windowmanager.h" />
+    <ClInclude Include="TaskbarManager.h" />
+    <ClInclude Include="ThemeManager.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dcompmanager.cpp" />
-    <ClCompile Include="hotkeyhandler.cpp" />
+    <ClCompile Include="ExplorerIntegration.cpp" />
+    <ClCompile Include="HotKeyHandler.cpp" />
     <ClCompile Include="konanix.cpp" />
-    <ClCompile Include="magnifiermanager.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="screenmanager.cpp" />
-    <ClCompile Include="startmenu.cpp" />
-    <ClCompile Include="windowmanager.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="PerformanceMonitor.cpp" />
+    <ClCompile Include="PluginManager.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="TaskbarManager.cpp" />
+    <ClCompile Include="ThemeManager.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="konanix.rc" />
