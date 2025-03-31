@@ -1,5 +1,4 @@
 #pragma once
-
 #include <windows.h>
 #include "menumanager.h"
 #include "taskbarmanager.h"
@@ -9,6 +8,7 @@
 #include "thememanager.h"
 #include "hotkeyhandler.h"
 #include "TaskbarManager.h"
+#include "Magnification.h"
 
 
 class konanix {
@@ -32,6 +32,7 @@ private:
     settingsmanager* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
+	Magnification* magnifier;
 
     // helper functions
     void createStartMenu();

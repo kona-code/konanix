@@ -3,7 +3,7 @@
 
 // create a layered window for the start menu
 menumanager::menumanager() : menuWindow(nullptr), visible(false) {
-    menuWindow = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, L"STATIC", L"custom start menu",
+    menuWindow = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, L"STATIC", L"start menu",
         WS_POPUP | WS_BORDER, 0, 0, 800, 200, nullptr, nullptr, GetModuleHandle(NULL), nullptr);
     if (menuWindow) {
         // set window transparency with alpha (max 255)

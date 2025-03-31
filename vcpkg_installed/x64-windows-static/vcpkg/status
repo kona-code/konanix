@@ -60,3 +60,20 @@ Abi: 79bff4c62b58ff4063340b375b56e75d2b9c549b3ce04e630cabb8052a4366b9
 Description: GLFW is a free, Open Source, multi-platform library for OpenGL, OpenGL ES and Vulkan application development. It provides a simple, platform-independent API for creating windows, contexts and surfaces, reading input, handling events, etc.
 Status: install ok installed
 
+Package: sdl2
+Version: 2.32.2
+Port-Version: 1
+Depends: vcpkg-cmake:x64-windows, vcpkg-cmake-config:x64-windows
+Architecture: x64-windows-static
+Multi-Arch: same
+Abi: 90791f14dd1125ae045afcb8b8141e77139bd3035e826fa9cbcfce4b84889bfb
+Description: Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D.
+Status: install ok installed
+
+Package: vcpkg-cmake
+Version: 2024-04-23
+Architecture: x64-windows-static
+Multi-Arch: same
+Abi: ab72311c057cf3a94227227ddace460481de765499d45bd445ccefbeb5e11611
+Status: install ok installed
+

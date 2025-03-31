@@ -110,13 +110,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./opengl/glew/include;./opengl/glfw/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./opengl/glew/include;./opengl/glfw/include;./opengl/glut/include;./sdl2/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>./opengl/glew/glew32s.lib;./opengl/glfw/glfw3.lib;./opengl/glfw/glfw3_mt.lib;./opengl/glfw/glfw3dll.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./opengl/glew/glew32s.lib;./opengl/glfw/glfw3.lib;./opengl/glfw/glfw3_mt.lib;./opengl/glfw/glfw3dll.lib;./opengl/glfw/glut.lib;./opengl/glfw/glut32.lib;./sdl2/SDL2.lib;./sdl2/SDL2main.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,6 +145,7 @@
     <ClInclude Include="PerformanceMonitor.h" />
     <ClInclude Include="PluginManager.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TaskbarManager.h" />
@@ -156,10 +157,13 @@
     <ClCompile Include="HotKeyHandler.cpp" />
     <ClCompile Include="konanix.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Magnification.cpp" />
+    <ClCompile Include="Magnification.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="PerformanceMonitor.cpp" />
     <ClCompile Include="PluginManager.cpp" />
+    <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TaskbarManager.cpp" />
     <ClCompile Include="ThemeManager.cpp" />

@@ -35,6 +35,7 @@ bool konanix::initialize()
     settingsManager = new settingsmanager();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
+    magnifier = new Magnification(2560, 1440);
 
     // initialize hotkey handler
     if (!hotkeyHandler->initialize()) {
@@ -68,24 +69,32 @@ void konanix::registerHotkey()
     // for additional registration
 }
 
-void konanix::toggleStartMenu(bool pressed)
-{
+void konanix::toggleStartMenu(bool pressed) {
     if (pressed) {
-        if (menuManager->isVisible()) {
-            closeStartMenu();
-            taskbarManager->showTaskbar();
-        }
-        else {
-            manipulateExplorerMenu(true);
+        if (!menuManager->isVisible()) {
             menuManager->showMenu();
             taskbarManager->hideTaskbar();
+
+            // Simulate screen shrinking by capturing and rendering at 0.8 scale
+                magnifier->setZoomFactor(0.8F);  // Start the magnification process (shrink the screen)
+            
+        }
+        else {
+            menuManager->hideMenu();
+            taskbarManager->showTaskbar();
+
+            // Restore the screen (simulate zoom-in effect) by capturing at normal scale
+                magnifier->setZoomFactor(1.0F);  // Stop the magnification process (restore the screen)
+            
         }
     }
     else {
-        // ensure explorer taskbar is restored when key is released
-        manipulateExplorerMenu(false);
+        taskbarManager->showTaskbar();
     }
 }
+
+
+
 
 void konanix::createStartMenu()
 {
