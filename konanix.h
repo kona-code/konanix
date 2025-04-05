@@ -32,12 +32,14 @@ private:
     settingsmanager* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
-	Magnification* magnifier;
+	DirectCompositionMagnifier* magnifier;
 
     // helper functions
     void createStartMenu();
     void closeStartMenu();
     void manipulateExplorerMenu(bool hide);
+
+	bool isToggled;
 
     // static pointer for keyboard hook callback
     static konanix* pKonanixInstance;

@@ -1,27 +1,28 @@
 #pragma once
+#include <windows.h>
+#include <dcomp.h>
+#include <d2d1.h>
+#include <wrl/client.h>
 
-#include <SDL2/SDL.h>
+using Microsoft::WRL::ComPtr;
 
-#pragma comment(lib, "SetupAPI.lib")  // for HID device functions
-#pragma comment(lib, "Winmm.lib")     // for multimedia functions (waveOut, timeBeginPeriod)
-#pragma comment(lib, "Imm32.lib")     // for input Method Manager (IME) functions
-#pragma comment(lib, "Cfgmgr32.lib")  // for configuration Manager (CM) functions
-
-
-class Magnification {
+// handles a directcomposition-based magnification effect
+class DirectCompositionMagnifier {
 public:
-    Magnification(int width, int height);
-    ~Magnification();
+    DirectCompositionMagnifier();
+    ~DirectCompositionMagnifier();
 
-    void setZoomFactor(float factor);
-    void render();
+    // initialize the dcomp device and create an overlay for the given window handle
+    bool Initialize(HWND hwnd);
 
-    // cleanup SDL resources
-    void cleanup();
+    // apply a scale transform to the overlay
+    bool ApplyScale(float scale);
+
+    // commit changes to update the display
+    void Commit();
 
 private:
-    int screenWidth, screenHeight;
-    float zoomFactor;
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    ComPtr<IDCompositionDevice> m_dcompDevice;
+    ComPtr<IDCompositionTarget> m_dcompTarget;
+    ComPtr<IDCompositionVisual> m_dcompVisual;
 };

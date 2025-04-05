@@ -35,12 +35,17 @@ bool konanix::initialize()
     settingsManager = new settingsmanager();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
-    magnifier = new Magnification(2560, 1440);
+    magnifier = new DirectCompositionMagnifier();
 
-    // initialize hotkey handler
+    // initialize
     if (!hotkeyHandler->initialize()) {
-        MessageBox(NULL, L"failed to install hotkey hook", L"error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, L"Failed to install hotkey hook", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
         return false;
+    }
+
+	HWND MagnificationHWND = nullptr;
+    if (!magnifier->Initialize(MagnificationHWND)) {
+        MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
     }
     // load settings and theme
     settingsManager->loadSettings();
@@ -75,17 +80,17 @@ void konanix::toggleStartMenu(bool pressed) {
             menuManager->showMenu();
             taskbarManager->hideTaskbar();
 
-            // Simulate screen shrinking by capturing and rendering at 0.8 scale
-                magnifier->setZoomFactor(0.8F);  // Start the magnification process (shrink the screen)
-            
+            // simulate screen shrinking
+            magnifier->ApplyScale(0);
+
         }
         else {
             menuManager->hideMenu();
             taskbarManager->showTaskbar();
 
-            // Restore the screen (simulate zoom-in effect) by capturing at normal scale
-                magnifier->setZoomFactor(1.0F);  // Stop the magnification process (restore the screen)
-            
+            // restore the screen
+            magnifier->ApplyScale(1.0F);
+
         }
     }
     else {

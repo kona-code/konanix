@@ -1,55 +1,65 @@
 #include "Magnification.h"
 #include <iostream>
 
-Magnification::Magnification(int width, int height)
-    : screenWidth(width), screenHeight(height), zoomFactor(1.0f) {
-    // initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL_Init failed: " << SDL_GetError() << std::endl;
-        exit(1);
+#pragma comment(lib, "dcomp.lib")
+
+DirectCompositionMagnifier::DirectCompositionMagnifier() {
+    // empty constructor
+}
+
+DirectCompositionMagnifier::~DirectCompositionMagnifier() {
+    // resources will be automatically released by ComPtr
+}
+
+bool DirectCompositionMagnifier::Initialize(HWND hwnd) {
+    // create a directcomposition device
+    HRESULT hr = DCompositionCreateDevice(nullptr, IID_PPV_ARGS(&m_dcompDevice));
+    if (FAILED(hr)) {
+        std::cerr << "failed to create dcomp device" << std::endl;
+        return false;
     }
 
-    // create an SDL window
-    window = SDL_CreateWindow("Magnification Effect", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        screenWidth, screenHeight, SDL_WINDOW_SHOWN);
-    if (!window) {
-        std::cerr << "SDL_CreateWindow failed: " << SDL_GetError() << std::endl;
-        exit(1);
+    // create a composition target for the given window
+    hr = m_dcompDevice->CreateTargetForHwnd(hwnd, TRUE, &m_dcompTarget);
+    if (FAILED(hr)) {
+        std::cerr << "failed to create dcomp target" << std::endl;
+        return false;
     }
 
-    // create the SDL renderer
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        std::cerr << "SDL_CreateRenderer failed: " << SDL_GetError() << std::endl;
-        exit(1);
+    // create a visual that we will transform\n
+    hr = m_dcompDevice->CreateVisual(&m_dcompVisual);
+    if (FAILED(hr)) {
+        std::cerr << "failed to create dcomp visual" << std::endl;
+        return false;
     }
+
+    // set the visual as the root for the target\n
+    hr = m_dcompTarget->SetRoot(m_dcompVisual.Get());
+    if (FAILED(hr)) {
+        std::cerr << "failed to set dcomp visual as root" << std::endl;
+        return false;
+    }
+
+    // commit the initial state\n
+    m_dcompDevice->Commit();
+    return true;
 }
 
-Magnification::~Magnification() {
-    cleanup();
+bool DirectCompositionMagnifier::ApplyScale(float scale) {
+    if (!m_dcompVisual) return false;
+
+    // create a scaling matrix using D2D1 helper\n
+    D2D1_MATRIX_3X2_F matrix = D2D1::Matrix3x2F::Scale(scale, scale);
+    HRESULT hr = m_dcompVisual->SetTransform(matrix);
+    if (FAILED(hr)) {
+        std::cerr << "failed to set transform" << std::endl;
+        return false;
+    }
+    return true;
 }
 
-void Magnification::setZoomFactor(float factor) {
-    zoomFactor = factor;
-}
-
-void Magnification::render() {
-    // clear the window
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-
-    SDL_Rect rect = { 100, 100, static_cast<int>(300 * zoomFactor), static_cast<int>(200 * zoomFactor) };
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderFillRect(renderer, &rect);
-
-    // present the renderer to the screen
-    SDL_RenderPresent(renderer);
-}
-
-void Magnification::cleanup() {
-    // destroy the renderer and window
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
+void DirectCompositionMagnifier::Commit() {
+    if (m_dcompDevice) {
+        m_dcompDevice->Commit();
+    }
 }
