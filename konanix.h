@@ -32,7 +32,7 @@ private:
     settingsmanager* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
-	DirectCompositionMagnifier* magnifier;
+	MagnifierManager* magnifier;
 
     // helper functions
     void createStartMenu();

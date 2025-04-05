@@ -27,7 +27,7 @@ bool konanix::initialize()
 {
     pKonanixInstance = this;
 
-    // create/initialize modules
+    // create modules
     menuManager = new menumanager();
     taskbarManager = new taskbarmanager();
     explorerIntegration = new explorerintegration();
@@ -35,7 +35,7 @@ bool konanix::initialize()
     settingsManager = new settingsmanager();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
-    magnifier = new DirectCompositionMagnifier();
+    magnifier = new MagnifierManager();
 
     // initialize
     if (!hotkeyHandler->initialize()) {
@@ -44,7 +44,8 @@ bool konanix::initialize()
     }
 
 	HWND MagnificationHWND = nullptr;
-    if (!magnifier->Initialize(MagnificationHWND)) {
+    //if (!magnifier->Initialize(hInstance, L"C:\\image.png")) {
+    if (!magnifier->Initialize(hInstance)) {
         MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
     }
     // load settings and theme
@@ -77,20 +78,23 @@ void konanix::registerHotkey()
 void konanix::toggleStartMenu(bool pressed) {
     if (pressed) {
         if (!menuManager->isVisible()) {
-            menuManager->showMenu();
             taskbarManager->hideTaskbar();
 
             // simulate screen shrinking
-            magnifier->ApplyScale(0);
-
+            magnifier->AnimateScale(0.8F, 50);
+            menuManager->showMenu();
+            
         }
         else {
             menuManager->hideMenu();
+
+			// simulate screen restoring
+			magnifier->AnimateScale(1.0F, 50);
             taskbarManager->showTaskbar();
 
             // restore the screen
-            magnifier->ApplyScale(1.0F);
-
+            //magnifier->RemoveScaleTransform();
+			magnifier->Hide(); // currently cancels the animation
         }
     }
     else {
