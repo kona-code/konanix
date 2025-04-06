@@ -14,7 +14,7 @@ std::vector<PinnedShortcut> GetPinnedTaskbarShortcuts() {
             L"\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar";
         std::wstring searchPattern = pinnedFolder + L"\\*.lnk";
 
-        WIN32_FIND_DATAW findData;
+        WIN32_FIND_DATAW findData = { 0 };
         HANDLE hFind = FindFirstFileW(searchPattern.c_str(), &findData);
         if (hFind != INVALID_HANDLE_VALUE) {
             do {

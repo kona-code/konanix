@@ -60,7 +60,7 @@ bool MagnifierManager::Initialize(HINSTANCE hInstance) {
         std::cerr << "failed to create magnifier control" << std::endl;
         return false;
     }
-
+    
     // store this instance pointer for potential timer callbacks (if needed)
     SetWindowLongPtr(m_hwndOverlay, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 

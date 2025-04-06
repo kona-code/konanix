@@ -70,3 +70,13 @@ Abi: 6c04a1a37c46d954b3b43ab21ffe2bb723a3e681c784ff6ebb6fa3d1aaaa9555
 Description: Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D.
 Status: install ok installed
 
+Package: nlohmann-json
+Version: 3.11.3
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: ba8f25cfdfdd3b638ee38f5408b2dca7f4a7b98cebd74c0e06c268686cbe7231
+Description: JSON for Modern C++
+Status: install ok installed
+
