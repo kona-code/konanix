@@ -43,6 +43,8 @@ bool MagnifierManager::Initialize(HINSTANCE hInstance) {
         std::cerr << "failed to create overlay window" << std::endl;
         return false;
     }
+    SetWindowLong(m_hwndOverlay, GWL_EXSTYLE, GetWindowLong(m_hwndOverlay, GWL_EXSTYLE) | WS_EX_TOOLWINDOW);  // remove from taskbar
+
 
     // make the overlay window transparent using color key transparency
     SetLayeredWindowAttributes(m_hwndOverlay, RGB(0, 0, 0), 0, LWA_COLORKEY);
@@ -93,7 +95,6 @@ bool MagnifierManager::ApplyScaleTransform(float scale) {
 void MagnifierManager::AnimateScale(float targetScale, int durationMs) {
     if (!m_initialized || !m_hwndMagnifier)
         return;
-
     Show();
 
     float startScale = m_currentScale; // capture starting scale
