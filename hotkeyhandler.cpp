@@ -47,7 +47,7 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                     isWindowsKeyPressed = true; 
                     // toggle custom start menu via main (konanix) instance
                     if (s_pWindowManager) {
-                        s_pWindowManager->toggleStartMenu(true); 
+						s_pWindowManager->toggleStartMenu(true); // set to false if you want to show the menu on key dwown
                     }                    
                     return 1; // block default behavior
                 }
@@ -57,7 +57,7 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                 isWindowsKeyPressed = false; 
                 // ensure key release is processed
                 if (s_pWindowManager) {
-                    s_pWindowManager->toggleStartMenu(false); 
+                    s_pWindowManager->toggleStartMenu(false); // set to true if you want to show the menu on key dwown
                 }                
                 return 1; 
             }

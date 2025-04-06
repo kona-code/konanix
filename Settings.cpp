@@ -20,7 +20,7 @@ static std::wstring GetSettingsFilePath(const std::wstring& appFolder, const std
 
 Settings::Settings() {
     //settingsFilePath = GetSettingsFilePath(L"\\NightVoid\\konanix\\Settings\\", L"settings.json");
-    LoadFile(L"NightVoid\\konanix\\Settings", L"settings.json");
+    //LoadFile(L"NightVoid\\konanix\\Settings", L"settings.json");
     setDefaultValues();
 }
 
@@ -43,14 +43,14 @@ void Settings::LoadFile(const std::wstring appFolder, const std::wstring fileNam
 bool Settings::load() {
     std::ifstream file(settingsFilePath);
     if (!file.is_open()) {
-        std::cerr << "failed to open settings file" << std::endl;
+        std::cerr << "Failed to open settings file" << std::endl;
         return false;
     }
     try {
         file >> jsonData;
     }
     catch (const std::exception& e) {
-        std::cerr << "failed to parse settings: " << e.what() << std::endl;
+        std::cerr << "Failed to parse settings: " << e.what() << std::endl;
         return false;
     }
     return true;
@@ -59,7 +59,7 @@ bool Settings::load() {
 bool Settings::save() {
     std::ofstream file(settingsFilePath);
     if (!file.is_open()) {
-        std::cerr << "failed to open settings file for writing" << std::endl;
+        std::cerr << "Failed to open settings file for writing" << std::endl;
         return false;
     }
     file << jsonData.dump(4);
@@ -82,4 +82,15 @@ std::string Settings::getStartMenuConfig() const {
     if (jsonData.contains("start_menu_config"))
         return jsonData["start_menu_config"].get<std::string>();
     return "classic";
+}
+
+int Settings::getMenuHeight() const {
+    if (jsonData.contains("menu_height"))
+        return jsonData["menu_height"].get<int>();
+    return 80;
+}
+int Settings::getMenuWidth() const {
+    if (jsonData.contains("menu_width"))
+        return jsonData["menu_width"].get<int>();
+    return 1200;
 }

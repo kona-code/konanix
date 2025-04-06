@@ -1,20 +1,27 @@
 #pragma once
 #include <windows.h>
-
-// class that manages the custom start menu window
+#include <vector>
+#include <string>
+#include "Settings.h"
+// manages the custom start menu window
 class menumanager {
 public:
-    menumanager(); // initializes member variables and creates the menu window
+    menumanager();
     ~menumanager();
 
     void initialize();
     void showMenu();
     void hideMenu();
-    void updateMenu();
-    bool isVisible() const; // returns current visibility state
+    void updateMenu(); // updates the menu with pinned shortcuts
+    bool isVisible() const;
     void shutdown(); // cleanup before exit
 
 private:
     HWND menuWindow; // handle to the menu window
+	Settings settings; // settings pointer
+
     bool visible;
+
+    int height = settings.getMenuHeight();
+    int width = settings.getMenuWidth();;
 };

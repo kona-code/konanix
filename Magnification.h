@@ -1,35 +1,50 @@
 #pragma once
 #include <windows.h>
 #include <magnification.h>
-#include <math.h>
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <atomic>
 
+#pragma comment(lib, "Magnification.lib")
+
+// class that manages screen magnification using the windows magnification api
 class MagnifierManager {
 public:
     MagnifierManager();
     ~MagnifierManager();
 
     bool Initialize(HINSTANCE hInstance);
-    bool IsInitialized() const;
-    bool ApplyScaleTransform(float scale);
-    bool RemoveScaleTransform();
+
     void Show();
     void Hide();
 
-    void AnimateScale(float targetScale, int durationMs = 100);
+    bool ApplyScaleTransform(float scale);
+    // animate zoom (smooth transition) from current scale to target scale
+    void AnimateScale(float targetScale, int durationMs);
+    // continuously refresh content
+    void StartRefreshing();
+    void StopRefreshing();
+
+    bool IsInitialized() const;
 
 private:
-    HWND m_hwndMagnifier;
-    HWND m_hwndOverlay;
-    bool m_initialized;
-    float m_currentScale;
-    float m_targetScale;
-    int m_animationSteps;
-    int m_currentStep;
+    // helper to update the source rectangle of the magnifier control
+    void Refresh();
 
-    // screen dimensions
+    HWND m_hwndMagnifier;   // handle to the magnifier control
+    HWND m_hwndOverlay;     // handle to the overlay window
+
+    bool m_initialized;     // whether initialization succeeded
+    float m_currentScale;   // current applied scale factor
+    float m_targetScale;    // target scale factor (set by animation)
+    int m_animationSteps;   // total number of steps in the animation
+    int m_currentStep;      // current animation step
+
+    // screen dimensions computed once
     int m_screenWidth;
     int m_screenHeight;
 
-    static VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-    void StepScale();
+    // atomic flag to control refresh thread
+    std::atomic<bool> m_refreshing;
 };

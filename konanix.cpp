@@ -76,29 +76,29 @@ void konanix::registerHotkey()
 }
 
 void konanix::toggleStartMenu(bool pressed) {
-    if (pressed) {
-        if (!menuManager->isVisible()) {
+    if (!pressed) {
+        if (!toggled) {
             taskbarManager->hideTaskbar();
 
             // simulate screen shrinking
-            magnifier->AnimateScale(0.8F, 50);
+            magnifier->AnimateScale(0.8F, 60);
             menuManager->showMenu();
-            
+            toggled = !toggled;
         }
         else {
+            taskbarManager->hideTaskbar();
             menuManager->hideMenu();
 
-			// simulate screen restoring
-			magnifier->AnimateScale(1.0F, 50);
+            // simulate screen restoring
+            magnifier->AnimateScale(1.0F, 60);
             taskbarManager->showTaskbar();
 
             // restore the screen
             //magnifier->RemoveScaleTransform();
-			magnifier->Hide(); // currently cancels the animation
+            magnifier->Hide(); // currently cancels the animation
+            toggled = !toggled;
+
         }
-    }
-    else {
-        taskbarManager->showTaskbar();
     }
 }
 

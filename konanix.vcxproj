@@ -151,6 +151,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TaskbarManager.h" />
+    <ClInclude Include="TaskbarRipper.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TaskbarManager.cpp" />
+    <ClCompile Include="TaskbarRipper.cpp" />
     <ClCompile Include="ThemeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

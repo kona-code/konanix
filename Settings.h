@@ -8,10 +8,16 @@ public:
     Settings();
     bool load();
     bool save();
-    float getScreenZoom() const;
-    int getAnimationTime() const;
     std::string getStartMenuConfig() const;
     void LoadFile(const std::wstring appFolder, const std::wstring fileName);
+
+    // magnification settings
+    float getScreenZoom() const;
+    int getAnimationTime() const;
+
+    // menu settings
+    int getMenuHeight() const;
+    int getMenuWidth() const;
 
 private:
     std::wstring settingsFilePath;

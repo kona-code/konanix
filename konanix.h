@@ -39,7 +39,7 @@ private:
     void closeStartMenu();
     void manipulateExplorerMenu(bool hide);
 
-	bool isToggled;
+	bool toggled;
 
     // static pointer for keyboard hook callback
     static konanix* pKonanixInstance;
