@@ -1,46 +1,35 @@
 #pragma once
 #include <windows.h>
 #include <magnification.h>
-#include <iostream>
-#include <thread>
-#include <chrono>
+#include <math.h>
 
-#pragma comment(lib, "Magnification.lib")
-
-// manages screen magnification using the windows magnification api
 class MagnifierManager {
 public:
     MagnifierManager();
     ~MagnifierManager();
 
-    // initialize overlay window and load the background image
     bool Initialize(HINSTANCE hInstance);
-    // show/hide the overlay window
+    bool IsInitialized() const;
+    bool ApplyScaleTransform(float scale);
+    bool RemoveScaleTransform();
     void Show();
     void Hide();
-    // apply a scale transform with centered translation
-    bool ApplyScaleTransform(float scale);
-    void AnimateScale(float targetScale, int durationMs);
-    bool IsInitialized() const;
+
+    void AnimateScale(float targetScale, int durationMs = 100);
 
 private:
-    // draws the background image
-    static LRESULT CALLBACK OverlayWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    HWND m_hwndMagnifier;
+    HWND m_hwndOverlay;
+    bool m_initialized;
+    float m_currentScale;
+    float m_targetScale;
+    int m_animationSteps;
+    int m_currentStep;
 
-    HWND m_hwndMagnifier;   // handle to the magnifier control
-    HWND m_hwndOverlay;     // handle to the overlay window
-    bool m_initialized;     // whether initialization succeeded
-    float m_currentScale;   // current applied scale factor
-    float m_targetScale;    // target scale factor (set by animation)
-    int m_animationSteps;   // total number of steps in the animation
-    int m_currentStep;      // current animation step
-
-    // screen dimensions computed once
+    // screen dimensions
     int m_screenWidth;
     int m_screenHeight;
 
-    // background image for the overlay
-    HBITMAP m_hBackground;
-
-    bool LoadBackgroundImage(const wchar_t* imagePath);
+    static VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+    void StepScale();
 };

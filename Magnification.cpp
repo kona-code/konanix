@@ -1,6 +1,13 @@
 #include "Magnification.h"
+#include <magnification.h>
+#include <cmath>
+#include <thread>
+#include <chrono>
 
-#define TIMER_INTERVAL 10 // in milliseconds
+#pragma comment(lib, "Magnification.lib")
+
+#define TIMER_ID 1
+#define TIMER_INTERVAL 10 // 10ms per frame
 
 MagnifierManager::MagnifierManager()
     : m_hwndMagnifier(nullptr), m_hwndOverlay(nullptr), m_initialized(false),
@@ -10,10 +17,8 @@ MagnifierManager::MagnifierManager()
 }
 
 MagnifierManager::~MagnifierManager() {
-    if (m_hwndMagnifier)
-        DestroyWindow(m_hwndMagnifier);
-    if (m_hwndOverlay)
-        DestroyWindow(m_hwndOverlay);
+    if (m_hwndMagnifier) DestroyWindow(m_hwndMagnifier);
+    if (m_hwndOverlay) DestroyWindow(m_hwndOverlay);
     MagUninitialize();
 }
 
@@ -22,52 +27,32 @@ bool MagnifierManager::IsInitialized() const {
 }
 
 bool MagnifierManager::Initialize(HINSTANCE hInstance) {
-    if (!MagInitialize()) {
-        std::cerr << "failed to initialize magnification api" << std::endl;
-        return false;
-    }
+    if (!MagInitialize()) return false;
+    
+    m_hwndOverlay = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOPMOST, L"STATIC", L"",
+        WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+        nullptr, nullptr, hInstance, nullptr);
+    if (!m_hwndOverlay) return false;
 
-    // create a full-screen overlay window
-    m_hwndOverlay = CreateWindowEx(
-        WS_EX_LAYERED | WS_EX_TOPMOST,
-        L"STATIC", L"",
-        WS_POPUP,
-        0, 0, m_screenWidth, m_screenHeight,
-        nullptr, nullptr, hInstance, nullptr
-    );
-    if (!m_hwndOverlay) {
-        std::cerr << "failed to create overlay window" << std::endl;
-        return false;
-    }
-
-    // make the overlay window transparent using color key transparency
     SetLayeredWindowAttributes(m_hwndOverlay, RGB(0, 0, 0), 0, LWA_COLORKEY);
     ShowWindow(m_hwndOverlay, SW_SHOW);
 
-    m_hwndMagnifier = CreateWindow(
-        WC_MAGNIFIER, L"",
+    m_hwndMagnifier = CreateWindow(WC_MAGNIFIER, L"",
         WS_CHILD | WS_VISIBLE,
-        0, 0, m_screenWidth, m_screenHeight,
-        m_hwndOverlay, nullptr, hInstance, nullptr
-    );
-    if (!m_hwndMagnifier) {
-        std::cerr << "failed to create magnifier control" << std::endl;
-        return false;
-    }
+        0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+        m_hwndOverlay, nullptr, hInstance, nullptr);
+    if (!m_hwndMagnifier) return false;
 
-    // store this instance pointer for potential timer callbacks (if needed)
+    // store the instance pointer for the TimerProc callback
     SetWindowLongPtr(m_hwndOverlay, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-
-    Hide(); // hide overlay by default
+    Hide();
     m_initialized = true;
     return true;
 }
 
 bool MagnifierManager::ApplyScaleTransform(float scale) {
-    if (!m_initialized || !m_hwndMagnifier)
-        return false;
+    if (!m_initialized || !m_hwndMagnifier) return false;
 
-    // center the scaled content - compute translation so that the center remains fixed
     float centerX = m_screenWidth / 2.0f;
     float centerY = m_screenHeight / 2.0f;
 
@@ -76,48 +61,59 @@ bool MagnifierManager::ApplyScaleTransform(float scale) {
     matrix.v[0][2] = (1.0f - scale) * centerX;  // translate x-axis
     matrix.v[1][1] = scale;                     // scale y-axis
     matrix.v[1][2] = (1.0f - scale) * centerY;  // translate y-axis
-    matrix.v[2][2] = 1.0f;                      // z-axis remains 1
+    matrix.v[2][2] = 1.0f;
 
-    if (!MagSetWindowTransform(m_hwndMagnifier, &matrix)) {
-        std::cerr << "failed to set window transform" << std::endl;
-        return false;
-    }
+    if (!MagSetWindowTransform(m_hwndMagnifier, &matrix)) return false;
+
+    MagSetWindowSource(m_hwndMagnifier, { 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) });
+
     m_currentScale = scale;
     return true;
 }
 
+bool MagnifierManager::RemoveScaleTransform() {
+    return ApplyScaleTransform(1.0f);
+}
+
+void MagnifierManager::Show() {
+    if (m_hwndOverlay) ShowWindow(m_hwndOverlay, SW_SHOW);
+}
+
+void MagnifierManager::Hide() {
+    ShowWindow(m_hwndOverlay, SW_HIDE);
+}
+
 void MagnifierManager::AnimateScale(float targetScale, int durationMs) {
-    if (!m_initialized || !m_hwndMagnifier)
-        return;
+    if (!m_initialized || !m_hwndMagnifier) return;
 
     Show();
 
-    m_targetScale = targetScale;
-    m_animationSteps = durationMs / TIMER_INTERVAL;
-    m_currentStep = 0;
-
-    // simple loop with sleep
-    std::thread([this]() {
-        const int steps = m_animationSteps;
+    std::thread([this, targetScale, durationMs]() {
+        const int steps = durationMs / TIMER_INTERVAL;
         for (int i = 0; i <= steps; i++) {
             float t = static_cast<float>(i) / steps;
-            // linear interpolation between current scale and target scale
-            float newScale = m_currentScale * (1.0f - t) + m_targetScale * t;
+            float newScale = m_currentScale * (1.0f - t) + targetScale * t;
             ApplyScaleTransform(newScale);
             std::this_thread::sleep_for(std::chrono::milliseconds(TIMER_INTERVAL));
         }
         }).detach();
 }
-
-void MagnifierManager::Show() {
-    if (m_hwndOverlay) {
-        ShowWindow(m_hwndOverlay, SW_SHOW);
-        UpdateWindow(m_hwndOverlay);
-    }
+VOID CALLBACK MagnifierManager::TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+    MagnifierManager* pThis = reinterpret_cast<MagnifierManager*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    if (pThis) pThis->StepScale();
 }
 
-void MagnifierManager::Hide() {
-    if (m_hwndOverlay) {
-        ShowWindow(m_hwndOverlay, SW_HIDE);
+void MagnifierManager::StepScale() {
+    if (m_currentStep >= m_animationSteps) {
+        KillTimer(m_hwndOverlay, TIMER_ID);
+        ApplyScaleTransform(m_targetScale);
+        return;
     }
+
+    // Use proper interpolation
+    float t = static_cast<float>(m_currentStep) / m_animationSteps;
+    float newScale = m_currentScale * (1.0f - t) + m_targetScale * t;
+
+    ApplyScaleTransform(newScale);
+    m_currentStep++;
 }
