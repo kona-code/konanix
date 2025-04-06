@@ -29,7 +29,7 @@ private:
     taskbarmanager* taskbarManager;
     explorerintegration* explorerIntegration;
     performancemonitor* performanceMonitor;
-    settingsmanager* settingsManager;
+    Settings* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
 	MagnifierManager* magnifier;

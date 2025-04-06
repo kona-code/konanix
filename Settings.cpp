@@ -1,48 +1,85 @@
 #include "settings.h"
 #include <fstream>
 #include <iostream>
+#include <shlobj.h>
 #include <unordered_map>
 
-static std::unordered_map<std::string, std::string> settingsMap;
-
-settingsmanager::settingsmanager() {
-
+static std::wstring GetSettingsFilePath(const std::wstring& appFolder, const std::wstring& fileName) {
+    WCHAR appDataPath[MAX_PATH] = { 0 };
+    HRESULT hr = SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, appDataPath);
+    if (FAILED(hr)) {
+        return L"";
+    }
+    std::wstring settingsFolder = std::wstring(appDataPath) + L"\\" + appFolder;
+    DWORD attribs = GetFileAttributesW(settingsFolder.c_str());
+    if (attribs == INVALID_FILE_ATTRIBUTES || !(attribs & FILE_ATTRIBUTE_DIRECTORY)) {
+        CreateDirectoryW(settingsFolder.c_str(), NULL);
+    }
+    return settingsFolder + L"\\" + fileName;
 }
 
-settingsmanager::~settingsmanager() {
-    // cleanup code
+Settings::Settings() {
+    //settingsFilePath = GetSettingsFilePath(L"\\NightVoid\\konanix\\Settings\\", L"settings.json");
+    LoadFile(L"NightVoid\\konanix\\Settings", L"settings.json");
+    setDefaultValues();
 }
 
-void settingsmanager::loadSettings() {
-    std::ifstream file("settings.cfg");
-        if (file.is_open()) {
-        
-                std::string key, value;
-                while (file >> key >> value) {
-                    
-                        settingsMap[key] = value;
-                }
-                    file.close();
-        }
+void Settings::setDefaultValues() {
+    jsonData["screen_zoom"] = 1.0;
+    jsonData["animation_time"] = 50;
+    jsonData["start_menu_config"] = "classic";
 }
 
-void settingsmanager::saveSettings() {
-    std::ofstream file("settings.cfg");
-        if (file.is_open()) {
-            
-                for (auto& kv : settingsMap) {
-                    
-                        file << kv.first << "\\" << kv.second << std::endl;
-                }
-                    file.close();
-        }
+void Settings::LoadFile(const std::wstring appFolder, const std::wstring fileName) {
+    std::wstring settingsPath = GetSettingsFilePath(appFolder, fileName);
+    if (!settingsPath.empty()) {
+        //MessageBox(NULL, (L"Settings loaded from: " + settingsPath).c_str(), L"Konanix - Runtime information", MB_OK | MB_ICONINFORMATION);
+    }
+    else {
+        std::wcerr << L"Failed to determine settings file path." << std::endl;
+    }
 }
 
-std::string settingsmanager::getSetting(const std::string& key) {
-    return settingsMap[key];
+bool Settings::load() {
+    std::ifstream file(settingsFilePath);
+    if (!file.is_open()) {
+        std::cerr << "failed to open settings file" << std::endl;
+        return false;
+    }
+    try {
+        file >> jsonData;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "failed to parse settings: " << e.what() << std::endl;
+        return false;
+    }
+    return true;
 }
 
-void settingsmanager::setSetting(const std::string& key, const std::string& value) {
+bool Settings::save() {
+    std::ofstream file(settingsFilePath);
+    if (!file.is_open()) {
+        std::cerr << "failed to open settings file for writing" << std::endl;
+        return false;
+    }
+    file << jsonData.dump(4);
+    return true;
+}
 
-        settingsMap[key] = value;
+float Settings::getScreenZoom() const {
+    if (jsonData.contains("screen_zoom"))
+        return jsonData["screen_zoom"].get<float>();
+    return 1.0f;
+}
+
+int Settings::getAnimationTime() const {
+    if (jsonData.contains("animation_time"))
+        return jsonData["animation_time"].get<int>();
+    return 300;
+}
+
+std::string Settings::getStartMenuConfig() const {
+    if (jsonData.contains("start_menu_config"))
+        return jsonData["start_menu_config"].get<std::string>();
+    return "classic";
 }

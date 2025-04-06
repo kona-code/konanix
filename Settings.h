@@ -1,14 +1,20 @@
 #pragma once
 #include <string>
+#include <nlohmann/json.hpp>
 
-// class that manages configuration settings
-class settingsmanager {
+// manages application settings using a json file
+class Settings {
 public:
-        settingsmanager();
-        ~settingsmanager();
+    Settings();
+    bool load();
+    bool save();
+    float getScreenZoom() const;
+    int getAnimationTime() const;
+    std::string getStartMenuConfig() const;
+    void LoadFile(const std::wstring appFolder, const std::wstring fileName);
 
-        void loadSettings();
-        void saveSettings();
-        std::string getSetting(const std::string& key);
-        void setSetting(const std::string& key, const std::string& value);
+private:
+    std::wstring settingsFilePath;
+    void setDefaultValues();
+    nlohmann::json jsonData;
 };

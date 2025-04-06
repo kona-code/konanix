@@ -32,7 +32,7 @@ bool konanix::initialize()
     taskbarManager = new taskbarmanager();
     explorerIntegration = new explorerintegration();
     performanceMonitor = new performancemonitor();
-    settingsManager = new settingsmanager();
+    settingsManager = new Settings();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
     magnifier = new MagnifierManager();
@@ -49,7 +49,7 @@ bool konanix::initialize()
         MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
     }
     // load settings and theme
-    settingsManager->loadSettings();
+    settingsManager->load();
     themeManager->applytheme("default");
 
     return true;

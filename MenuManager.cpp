@@ -29,8 +29,8 @@ void menumanager::showMenu() {
     if (!menuWindow) return;
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    int menuWidth = 800;
-    int menuHeight = 200;
+    int menuWidth = 1200;
+    int menuHeight = 180;
     int posX = (screenWidth - menuWidth) / 2;
     int posY = screenHeight - menuHeight - 50; // 50 pixels above bottom
     SetWindowPos(menuWindow, HWND_TOPMOST, posX, posY, menuWidth, menuHeight, SWP_SHOWWINDOW);
