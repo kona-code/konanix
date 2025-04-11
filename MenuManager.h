@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <vector>
 #include <string>
+#include "Magnification.h"
 #include "Settings.h"
 // manages the custom start menu window
 class menumanager {
@@ -19,6 +20,9 @@ public:
 private:
     HWND menuWindow; // handle to the menu window
 	Settings settings; // settings pointer
+	MagnifierManager magnifierManager; // magnifier manager instance
+
+	HWND overlayHwnd = magnifierManager.GetOverlayWindow(); // handle to the overlay window
 
     bool visible;
 

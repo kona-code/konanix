@@ -49,7 +49,7 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                     if (s_pWindowManager) {
 						s_pWindowManager->toggleStartMenu(true); // set to false if you want to show the menu on key dwown
                     }                    
-                    return 1; // block default behavior
+                    //return 1; // block default behavior
                 }
             }
             else if (wParam == WM_KEYUP) {
@@ -59,7 +59,7 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                 if (s_pWindowManager) {
                     s_pWindowManager->toggleStartMenu(false); // set to true if you want to show the menu on key dwown
                 }                
-                return 1; 
+                //return 1; 
             }
         }
 

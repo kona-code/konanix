@@ -96,6 +96,9 @@
     <ClInclude Include="TaskbarRipper.h">
       <Filter>Header Files\environment\functions</Filter>
     </ClInclude>
+    <ClInclude Include="WinStart.h">
+      <Filter>Header Files\environment\functions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="konanix.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files\environment\functions</Filter>
     </ClCompile>
     <ClCompile Include="TaskbarRipper.cpp">
+      <Filter>Source Files\environment\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="WinStart.cpp">
       <Filter>Source Files\environment\functions</Filter>
     </ClCompile>
   </ItemGroup>

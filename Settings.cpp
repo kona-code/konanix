@@ -85,12 +85,12 @@ std::string Settings::getStartMenuConfig() const {
 }
 
 int Settings::getMenuHeight() const {
-    if (jsonData.contains("menu_height"))
-        return jsonData["menu_height"].get<int>();
+   // if (jsonData.contains("menu_height"))
+   //     return jsonData["menu_height"].get<int>();
     return 80;
 }
 int Settings::getMenuWidth() const {
-    if (jsonData.contains("menu_width"))
-        return jsonData["menu_width"].get<int>();
+    //if (jsonData.contains("menu_width"))
+    //    return jsonData["menu_width"].get<int>();
     return 1200;
 }

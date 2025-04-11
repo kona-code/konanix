@@ -9,7 +9,7 @@
 #include "hotkeyhandler.h"
 #include "TaskbarManager.h"
 #include "Magnification.h"
-
+#include "WinStart.h"
 
 class konanix {
 public:
@@ -33,6 +33,7 @@ private:
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
 	MagnifierManager* magnifier;
+    WinStart* winStart;
 
     // helper functions
     void createStartMenu();

@@ -154,6 +154,7 @@
     <ClInclude Include="TaskbarRipper.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="WinStart.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExplorerIntegration.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="TaskbarRipper.cpp" />
     <ClCompile Include="ThemeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="WinStart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="konanix.rc" />

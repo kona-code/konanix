@@ -43,8 +43,8 @@ void menumanager::showMenu() {
     int posX = (screenWidth - width) / 2;
     int posY = screenHeight - height - 50; // adjust
 
-    // place the window at the top, but note that it's independent from the magnifier overlay
-    SetWindowPos(menuWindow, HWND_TOPMOST, posX, posY, width, height, SWP_SHOWWINDOW);
+    // place the window at the top
+    SetWindowPos(menuWindow, HWND_TOPMOST, posX, posY, width, height, SWP_SHOWWINDOW | SWP_NOACTIVATE);
     visible = true;
     updateMenu(); // update content (pinned shortcuts)
 }

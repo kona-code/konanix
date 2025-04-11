@@ -5,6 +5,7 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include "Settings.h"
 
 #pragma comment(lib, "Magnification.lib")
 
@@ -13,6 +14,8 @@ class MagnifierManager {
 public:
     MagnifierManager();
     ~MagnifierManager();
+
+    HWND GetOverlayWindow() const { return m_hwndOverlay; }
 
     bool Initialize(HINSTANCE hInstance);
 
@@ -29,6 +32,7 @@ public:
     bool IsInitialized() const;
 
 private:
+    Settings settings;
     // helper to update the source rectangle of the magnifier control
     void Refresh();
 
