@@ -35,7 +35,6 @@ private:
 	MagnifierManager* magnifier;
     WinStart* winStart;
 
-    // helper functions
     void createStartMenu();
     void closeStartMenu();
     void manipulateExplorerMenu(bool hide);

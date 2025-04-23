@@ -2,7 +2,7 @@
 #include <windows.h>
 
 ScreenManager::ScreenManager() : isShrunk(false) {
-    // get the original work area (screen area excluding taskbars...)
+    // get the original work area
     SystemParametersInfo(SPI_GETWORKAREA, 0, &originalRect, 0);
 }
 
@@ -21,7 +21,7 @@ void ScreenManager::ShrinkScreen() {
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
     // calculate new dimensions (90% of original size)
-    int newWidth = static_cast<int>(screenWidth * 0.9);
+	int newWidth = static_cast<int>(screenWidth * 0.9);
     int newHeight = static_cast<int>(screenHeight * 0.9);
     int centerX = (screenWidth - newWidth) / 2;
     int centerY = (screenHeight - newHeight) / 2;

@@ -23,9 +23,10 @@ konanix::~konanix()
     delete hotkeyHandler;
 }
 
+// initialize all core functions
 bool konanix::initialize()
 {
-    pKonanixInstance = this;
+	pKonanixInstance = this; // set pointer for keyboard hook callback
 
     // create modules
     menuManager = new menumanager();
@@ -37,24 +38,26 @@ bool konanix::initialize()
     hotkeyHandler = new hotkeyhandler(hInstance, this);
     magnifier = new MagnifierManager();
 
-    // initialize
+	// load hotkey handler
     if (!hotkeyHandler->initialize()) {
-        MessageBox(NULL, L"Failed to install hotkey hook", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, L"Failed to install hotkey hook", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
         return false;
     }
 
+	// load magnification API
 	HWND MagnificationHWND = nullptr;
-    //if (!magnifier->Initialize(hInstance, L"C:\\image.png")) {
     if (!magnifier->Initialize(hInstance)) {
-        MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Runtime Error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
     }
-    // load settings and theme
+
+    // load settings and theme (unfinished functions)
     settingsManager->load();
     themeManager->applytheme("default");
 
     return true;
 }
 
+// run main message loop
 void konanix::run()
 {
     MSG msg;
@@ -67,35 +70,36 @@ void konanix::run()
 void konanix::shutdown()
 {
     menuManager->shutdown();
-    UnregisterHotKey(NULL, 1);
+	UnregisterHotKey(NULL, 1); // unregister hotkey (WINKEY/Super)
 }
 
 void konanix::registerHotkey()
 {
-    // for additional registration
+    // additional registration
 }
 
 void konanix::toggleStartMenu(bool pressed) {
     if (!pressed) {
         if (!toggled) {
-            //taskbarManager->hideTaskbar();
+			//taskbarManager->hideTaskbar(); //uncomment to hide taskbar
 			winStart->LoadApps();
+
             // simulate screen shrinking
             magnifier->AnimateScale(0.8F, 60);
-            //menuManager->showMenu();
+
+			//menuManager->showMenu(); //uncomment to enable custom start menu (unstable and unfinished)
             toggled = !toggled;
         }
         else {
-            //taskbarManager->hideTaskbar();
+			//taskbarManager->showTaskbar(); //uncomment to restore taskbar (enable if "hideTaskbar() is uncommented")
             //menuManager->hideMenu();
 
             // simulate screen restoring
             magnifier->AnimateScale(1.0F, 60);
-            //taskbarManager->showTaskbar();
 
             // restore the screen
             //magnifier->RemoveScaleTransform();
-            magnifier->Hide();
+			magnifier->Hide(); // enable user input - hides m_hwndOverlay window
             toggled = !toggled;
 
         }

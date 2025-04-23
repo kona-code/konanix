@@ -2,7 +2,6 @@
 #include "konanix.h"
 #include <iostream>
 
-// define static members
 konanix* hotkeyhandler::s_pWindowManager = nullptr;
 HHOOK hotkeyhandler::s_hHook = nullptr;
 bool hotkeyhandler::isWindowsKeyPressed = false;
@@ -45,11 +44,11 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                 if (!isWindowsKeyPressed) {       
                 
                     isWindowsKeyPressed = true; 
-                    // toggle custom start menu via main (konanix) instance
+                    // toggle custom start menu via konanix instance
                     if (s_pWindowManager) {
 						s_pWindowManager->toggleStartMenu(true); // set to false if you want to show the menu on key dwown
                     }                    
-                    //return 1; // block default behavior
+					//return 1; // block default behavior - uncomment to disable Windows' start menu (unrecommended)
                 }
             }
             else if (wParam == WM_KEYUP) {
@@ -59,7 +58,7 @@ LRESULT CALLBACK hotkeyhandler::keyboardProc(int nCode, WPARAM wParam, LPARAM lP
                 if (s_pWindowManager) {
                     s_pWindowManager->toggleStartMenu(false); // set to true if you want to show the menu on key dwown
                 }                
-                //return 1; 
+                //return 1; // block default behavior - uncomment to disable Windows' start menu (unrecommended)
             }
         }
 

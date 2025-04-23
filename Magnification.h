@@ -9,7 +9,7 @@
 
 #pragma comment(lib, "Magnification.lib")
 
-// class that manages screen magnification using the windows magnification api
+// manages screen magnification using the windows magnification api
 class MagnifierManager {
 public:
     MagnifierManager();
@@ -23,9 +23,9 @@ public:
     void Hide();
 
     bool ApplyScaleTransform(float scale);
-    // animate zoom (smooth transition) from current scale to target scale
+    // animated zoom from current scale to target scale
     void AnimateScale(float targetScale, int durationMs);
-    // continuously refresh content
+    // continuously refresh/render content
     void StartRefreshing();
     void StopRefreshing();
 

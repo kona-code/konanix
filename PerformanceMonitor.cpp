@@ -7,5 +7,4 @@ performancemonitor::performancemonitor() {
 }
 
 performancemonitor::~performancemonitor() {
-    // cleanup
 }

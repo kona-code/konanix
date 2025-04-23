@@ -11,7 +11,7 @@
 menumanager::menumanager() : menuWindow(nullptr), visible(false) {
 
     menuWindow = CreateWindowEx(
-        WS_EX_LAYERED | WS_EX_TOOLWINDOW,  // layered, no taskbar button
+        WS_EX_LAYERED | WS_EX_TOOLWINDOW,  // layered (no taskbar button)
         L"STATIC", L"start menu",
         WS_POPUP,  // top-level window
         0, 0, width, height,
@@ -41,12 +41,12 @@ void menumanager::showMenu() {
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
     int posX = (screenWidth - width) / 2;
-    int posY = screenHeight - height - 50; // adjust
+	int posY = screenHeight - height - 50; // position above the taskbar (in px)
 
     // place the window at the top
     SetWindowPos(menuWindow, HWND_TOPMOST, posX, posY, width, height, SWP_SHOWWINDOW | SWP_NOACTIVATE);
     visible = true;
-    updateMenu(); // update content (pinned shortcuts)
+    updateMenu(); // update pinned shortcuts
 }
 
 void menumanager::hideMenu() {

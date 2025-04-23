@@ -4,6 +4,7 @@
 #include <string>
 #include "Magnification.h"
 #include "Settings.h"
+
 // manages the custom start menu window
 class menumanager {
 public:

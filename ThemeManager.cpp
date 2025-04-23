@@ -8,7 +8,6 @@ thememanager::thememanager() {
 }
 
 thememanager::~thememanager() {
-    // cleanup code
 }
 
 void thememanager::applytheme(const std::string& themeName) {
