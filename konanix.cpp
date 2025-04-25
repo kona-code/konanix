@@ -36,7 +36,7 @@ bool konanix::initialize()
     settingsManager = new Settings();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
-    magnifier = new MagnifierManager();
+    mController = new ManipulationController(hInstance);
 
 	// load hotkey handler
     if (!hotkeyHandler->initialize()) {
@@ -46,10 +46,19 @@ bool konanix::initialize()
 
 	// load magnification API
 	HWND MagnificationHWND = nullptr;
-    if (!magnifier->Initialize(hInstance)) {
-        MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
-    }
+    //if (!magnifier->Initialize(hInstance)) {
+    //    MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
+    //}
+    ManipulationController app(hInstance);
+    if (!app.run()) return -1;
+	app.InitializeManipulation();
+	mController->m_overlay->create();
+	mController->m_overlay->show();
 
+    app.m_renderer = std::make_unique<VulkanRenderer>(app.m_overlay->handle());
+    if (!m_renderer->initialize()) {
+        throw std::runtime_error("Failed to initialize VulkanRenderer");
+    }
     // load settings and theme (unfinished functions)
     settingsManager->load();
     themeManager->applytheme("default");
@@ -85,7 +94,7 @@ void konanix::toggleStartMenu(bool pressed) {
 			winStart->LoadApps();
 
             // simulate screen shrinking
-            magnifier->AnimateScale(0.8F, 60);
+            m_renderer->render(0.8f);
 
 			//menuManager->showMenu(); //uncomment to enable custom start menu (unstable and unfinished)
             toggled = !toggled;
@@ -95,11 +104,11 @@ void konanix::toggleStartMenu(bool pressed) {
             //menuManager->hideMenu();
 
             // simulate screen restoring
-            magnifier->AnimateScale(1.0F, 60);
+            m_renderer->render(1.0f);
 
             // restore the screen
             //magnifier->RemoveScaleTransform();
-			magnifier->Hide(); // enable user input - hides m_hwndOverlay window
+			//magnifier->Hide(); // enable user input - hides m_hwndOverlay window
             toggled = !toggled;
 
         }

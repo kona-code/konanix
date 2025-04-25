@@ -80,3 +80,32 @@ Abi: ba8f25cfdfdd3b638ee38f5408b2dca7f4a7b98cebd74c0e06c268686cbe7231
 Description: JSON for Modern C++
 Status: install ok installed
 
+Package: vulkan-headers
+Version: 1.4.304.1
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: d3b264964cdc361deb52a979e870d6003296fe55347ea34be91ff61cd098ae61
+Description: Vulkan header files and API registry
+Status: install ok installed
+
+Package: vulkan-loader
+Version: 1.4.304.1
+Depends: vcpkg-cmake, vcpkg-cmake-config, vulkan-headers
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 0db5352201045c91fc63dbf8bb07c60c63fdb3c81a25530f7b783691783c5d2a
+Description: Vulkan Development Tools
+Status: install ok installed
+
+Package: vulkan
+Version: 2023-12-17
+Depends: vcpkg-cmake, vulkan-headers, vulkan-loader
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 6a72e9ba41db907d7eeaefb0adc495ac6d1c85ccc7a6f3c69c90335b4b7b0bcb
+Description: A stub package that ensures that Vulkan headers and a loader are available.
+    On Android, the NDK provides a loader at API level 24 or higher.
+Status: install ok installed
+

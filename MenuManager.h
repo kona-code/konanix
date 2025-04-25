@@ -21,9 +21,9 @@ public:
 private:
     HWND menuWindow; // handle to the menu window
 	Settings settings; // settings pointer
-	MagnifierManager magnifierManager; // magnifier manager instance
+	//ManipulationController mController; // magnifier manager instance
 
-	HWND overlayHwnd = magnifierManager.GetOverlayWindow(); // handle to the overlay window
+	//HWND overlayHwnd = mController.GetOverlayWindow(); // handle to the overlay window
 
     bool visible;
 

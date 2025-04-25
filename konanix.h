@@ -8,8 +8,10 @@
 #include "thememanager.h"
 #include "hotkeyhandler.h"
 #include "TaskbarManager.h"
-#include "Magnification.h"
+#include "Controller.h"
+#include "VulkanRenderer.h"
 #include "WinStart.h"
+
 
 class konanix {
 public:
@@ -32,7 +34,7 @@ private:
     Settings* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
-	MagnifierManager* magnifier;
+	ManipulationController* mController;
     WinStart* winStart;
 
     void createStartMenu();
@@ -40,6 +42,8 @@ private:
     void manipulateExplorerMenu(bool hide);
 
 	bool toggled;
+
+    std::unique_ptr<VulkanRenderer> m_renderer;
 
     // static pointer for keyboard hook callback
     static konanix* pKonanixInstance;
