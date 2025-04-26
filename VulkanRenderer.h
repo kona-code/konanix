@@ -1,8 +1,11 @@
 #pragma once  
 #include <windows.h>  
-#include <vulkan/vulkan.h>  
-#include <vector>  
-
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_win32.h>
+#include <stdexcept>
+#include <vector>
+#include <memory>
+#include "Logger.h"
 class VulkanRenderer {  
 public:  
    VulkanRenderer(HWND hwnd);  
@@ -32,6 +35,7 @@ private:
    VkSemaphore m_imageAvailable;  
    VkSemaphore m_renderFinished;  
    std::vector<VkRenderPassBeginInfo> m_renderPassInfo;  
+   std::vector<VkFramebuffer> m_framebuffers;
 
    // external image resources  
    VkImage m_externalImage;  
