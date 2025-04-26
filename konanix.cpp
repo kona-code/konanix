@@ -54,11 +54,14 @@ bool konanix::initialize()
 	app.InitializeManipulation();
 	mController->m_overlay->create();
 	mController->m_overlay->show();
-
-    app.m_renderer = std::make_unique<VulkanRenderer>(app.m_overlay->handle());
+    
+	// initialize Vulkan renderer
+    m_renderer = std::make_unique<VulkanRenderer>(app.m_overlay->handle());
     if (!m_renderer->initialize()) {
+        MessageBox(NULL, L"Failed to initialize VulkanRenderer.", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
         throw std::runtime_error("Failed to initialize VulkanRenderer");
     }
+
     // load settings and theme (unfinished functions)
     settingsManager->load();
     themeManager->applytheme("default");
