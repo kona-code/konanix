@@ -27,6 +27,8 @@ VulkanRenderer::VulkanRenderer(HWND hwnd)
 VulkanRenderer::~VulkanRenderer() { cleanup(); }
 
 bool VulkanRenderer::initialize() {
+    Logger::getInstance().logInfo(">-------------------[Logging Vulkan Initilization]-------------------<");
+
     Logger::getInstance().logInfo("Initializing VulkanRenderer...");
 
     // create Vulkan instance
@@ -58,19 +60,24 @@ bool VulkanRenderer::initialize() {
 
 
     // create surface
+    Logger::getInstance().logInfo("Creating Vulkan surface...");
     VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
     surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     surfaceCreateInfo.hwnd = m_hwnd;
     surfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
 
     if (vkCreateWin32SurfaceKHR(m_instance, &surfaceCreateInfo, nullptr, &m_surface) != VK_SUCCESS) {
+        Logger::getInstance().logError("Failed to create Vulkan surface.");
         throw std::runtime_error("Failed to create Vulkan surface.");
     }
+    Logger::getInstance().logInfo("Vulkan surface created successfully.");
 
     // select physical device
+	Logger::getInstance().logInfo("Selecting Vulkan physical device...");
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
     if (deviceCount == 0) {
+		Logger::getInstance().logError("Failed to find GPUs with Vulkan support.");
         throw std::runtime_error("Failed to find GPUs with Vulkan support.");
     }
 
@@ -92,10 +99,13 @@ bool VulkanRenderer::initialize() {
     }
 
     if (m_physical == VK_NULL_HANDLE) {
+		Logger::getInstance().logError("Failed to find a suitable GPU.");
         throw std::runtime_error("Failed to find a suitable GPU.");
     }
+    Logger::getInstance().logInfo("Vulkan physical device created successfully.");
 
     // create logical device
+	Logger::getInstance().logInfo("Creating Vulkan logical device...");
     uint32_t queueFamilyIndex = 0;
 
     float queuePriority = 1.0f;
@@ -117,6 +127,7 @@ bool VulkanRenderer::initialize() {
     deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     if (vkCreateDevice(m_physical, &deviceCreateInfo, nullptr, &m_device) != VK_SUCCESS) {
+		Logger::getInstance().logError("Failed to create logical device.");
         throw std::runtime_error("Failed to create logical device.");
     }
 
@@ -145,10 +156,13 @@ bool VulkanRenderer::initialize() {
     swapchainCreateInfo.clipped = VK_TRUE;
 
     if (vkCreateSwapchainKHR(m_device, &swapchainCreateInfo, nullptr, &m_swapchain) != VK_SUCCESS) {
+        Logger::getInstance().logInfo("Failed to create swapchain.");
         throw std::runtime_error("Failed to create swapchain.");
     }
+    Logger::getInstance().logInfo("Vulkan swapchain created successfully.");
 
 	// get swapchain images
+	Logger::getInstance().logInfo("Getting swapchain images...");
     uint32_t imageCount;
     vkGetSwapchainImagesKHR(m_device, m_swapchain, &imageCount, nullptr);
     m_swapchainImages.resize(imageCount);
@@ -161,8 +175,10 @@ bool VulkanRenderer::initialize() {
     poolInfo.queueFamilyIndex = queueFamilyIndex;
 
     if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
+		Logger::getInstance().logError("Failed to create command pool.");
         throw std::runtime_error("Failed to create command pool.");
     }
+    Logger::getInstance().logInfo("Vulkan command pool created successfully.");
 
     VkCommandBufferAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -172,8 +188,10 @@ bool VulkanRenderer::initialize() {
 
     m_commandBuffers.resize(m_swapchainImages.size());
     if (vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+		Logger::getInstance().logError("Failed to allocate command buffers.");
         throw std::runtime_error("Failed to allocate command buffers.");
     }
+    Logger::getInstance().logInfo("Successfully allocated Vulkan command buffers.");
 
     m_renderPassInfo.resize(m_swapchainImages.size());
     for (size_t i = 0; i < m_swapchainImages.size(); ++i) {
@@ -191,15 +209,19 @@ bool VulkanRenderer::initialize() {
         m_renderPassInfo[i] = renderPassInfo;
     }
 
-    // create Semaphores
+    // create semaphores
+	Logger::getInstance().logInfo("Creating Vulkan semaphores...");
     VkSemaphoreCreateInfo semaphoreInfo = {};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
     if (vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailable) != VK_SUCCESS ||
         vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinished) != VK_SUCCESS) {
+		Logger::getInstance().logError("Failed to create semaphores.");
         throw std::runtime_error("Failed to create semaphores.");
     }
+    Logger::getInstance().logInfo("Vulkan semaphores created successfully.");
 
+    Logger::getInstance().logInfo(">-------------------[Finished Vulkan Initilization]-------------------<");
 
     return true;
 }
@@ -213,6 +235,10 @@ bool VulkanRenderer::importExternalImage(HANDLE sharedHandle, int width, int hei
 }
 
 void VulkanRenderer::render(float scale) {  
+    Logger::getInstance().logInfo("Starting render with scale: " + std::to_string(scale));
+
+
+
    if (!this) {  
        MessageBox(NULL, L"VulkanRenderer instance is null.\nKonanix will now close for stability reasons.", L"Konanix Runtime Error", MB_ICONERROR);
        exit(1);
@@ -225,9 +251,18 @@ void VulkanRenderer::render(float scale) {
    float ty = -((1.0f - scale) * cy) / cy;  
 
    // acquire swapchain image  
-   uint32_t imgIndex;  
-   vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX,  
-       m_imageAvailable, VK_NULL_HANDLE, &imgIndex);  
+   // 
+    // acquire swapchain image
+   uint32_t imgIndex;
+   VkResult result = vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX, m_imageAvailable, VK_NULL_HANDLE, &imgIndex);
+   if (result != VK_SUCCESS) {
+       Logger::getInstance().logError("Failed to acquire swapchain image. Error code: " + std::to_string(result));
+       throw std::runtime_error("Failed to acquire swapchain image.");
+   }
+   Logger::getInstance().logInfo("Acquired swapchain image index: " + std::to_string(imgIndex));
+   //uint32_t imgIndex;  
+   //vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX,  
+   //    m_imageAvailable, VK_NULL_HANDLE, &imgIndex);  
 
    auto& cmd = m_commandBuffers[imgIndex];  
    vkResetCommandBuffer(cmd, 0);  
@@ -236,8 +271,10 @@ void VulkanRenderer::render(float scale) {
 
    // begin render pass  
    if (m_renderPassInfo.empty()) {  
+	   Logger::getInstance().logError("m_renderPassInfo is undefined or empty.");
        throw std::runtime_error("m_renderPassInfo is undefined or empty.");  
-   }  
+   }
+
    vkCmdBeginRenderPass(cmd, &m_renderPassInfo[imgIndex], VK_SUBPASS_CONTENTS_INLINE);  
 
    // bind pipeline and descriptors  

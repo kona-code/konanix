@@ -18,7 +18,8 @@ public:
     // menu settings
     int getMenuHeight() const;
     int getMenuWidth() const;
-
+    
+	int LogPath() const;
 private:
     std::wstring settingsFilePath;
     void setDefaultValues();

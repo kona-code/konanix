@@ -26,7 +26,7 @@ public:
     }
 
 private:
-    Logger() : m_logFile("konanix.log", std::ios::out | std::ios::app) {
+    Logger() : m_logFile("C:\\Logs\\konanix.log", std::ios::out | std::ios::app) {
         if (!m_logFile.is_open()) {
             MessageBox(NULL, L"Failed to open log file.", L"Konanix - Error", MB_OK | MB_ICONERROR);
             throw std::runtime_error("Failed to open log file.");
