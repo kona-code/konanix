@@ -1,7 +1,10 @@
+/*
 #pragma once
 #include <windows.h>
 #include <magnification.h>
 #include <iostream>
+#include <vector>
+#include <functional>
 #include <thread>
 #include <chrono>
 #include <atomic>
@@ -30,8 +33,16 @@ public:
     void StopRefreshing();
 
     bool IsInitialized() const;
+    void AddWidget(int x, int y, int width, int height, std::function<void(HDC)> paintCallback);
+
+    struct OverlayWidget {
+        HWND hwnd;
+        RECT bounds;
+        std::function<void(HDC)> paintCallback;
+    };
 
 private:
+
     Settings settings;
     // helper to update the source rectangle of the magnifier control
     void Refresh();
@@ -51,4 +62,8 @@ private:
 
     // atomic flag to control refresh thread
     std::atomic<bool> m_refreshing;
+
+	// stores overlay widgets
+    std::vector<OverlayWidget> m_widgets;
 };
+*/

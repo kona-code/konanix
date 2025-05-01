@@ -1,3 +1,4 @@
+/*
 #include "Magnification.h"
 
 #define TIMER_INTERVAL 10 // in milliseconds\
@@ -206,3 +207,4 @@ void MagnifierManager::Hide() {
         ShowWindow(m_hwndOverlay, SW_HIDE);
     }
 }
+*/

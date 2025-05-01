@@ -46,6 +46,12 @@
     <Filter Include="Source Files\utility">
       <UniqueIdentifier>{0f154af0-f677-4894-9946-1aa423c42c62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\environment\functions\screen manipulation">
+      <UniqueIdentifier>{e3041917-fa39-4083-82c7-639b07989cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\environment\functions\screen manipulation">
+      <UniqueIdentifier>{6e504852-7f8c-49a0-be50-a970a7810abe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="konanix.h">
@@ -98,6 +104,18 @@
     </ClInclude>
     <ClInclude Include="WinStart.h">
       <Filter>Header Files\environment\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="DesktopDuplicator.h">
+      <Filter>Header Files\environment\functions\screen manipulation</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanRenderer.h">
+      <Filter>Header Files\environment\functions\screen manipulation</Filter>
+    </ClInclude>
+    <ClInclude Include="OverlayWindow.h">
+      <Filter>Header Files\environment\functions\screen manipulation</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\environment\functions\screen manipulation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +170,18 @@
     <ClCompile Include="WinStart.cpp">
       <Filter>Source Files\environment\functions</Filter>
     </ClCompile>
+    <ClCompile Include="DesktopDuplicator.cpp">
+      <Filter>Source Files\environment\functions\screen manipulation</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRenderer.cpp">
+      <Filter>Source Files\environment\functions\screen manipulation</Filter>
+    </ClCompile>
+    <ClCompile Include="OverlayWindow.cpp">
+      <Filter>Source Files\environment\functions\screen manipulation</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\environment\functions\screen manipulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="konanix.rc">
@@ -165,5 +195,8 @@
     <Image Include="konanix.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fullscreen.vert" />
   </ItemGroup>
 </Project>

@@ -138,12 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="DesktopDuplicator.h" />
     <ClInclude Include="ExplorerIntegration.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HotKeyHandler.h" />
     <ClInclude Include="konanix.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="OverlayWindow.h" />
     <ClInclude Include="PerformanceMonitor.h" />
     <ClInclude Include="PluginManager.h" />
     <ClInclude Include="Resource.h" />
@@ -154,9 +157,12 @@
     <ClInclude Include="TaskbarRipper.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="VulkanRenderer.h" />
     <ClInclude Include="WinStart.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="DesktopDuplicator.cpp" />
     <ClCompile Include="ExplorerIntegration.cpp" />
     <ClCompile Include="HotKeyHandler.cpp" />
     <ClCompile Include="konanix.cpp" />
@@ -165,6 +171,7 @@
     <ClCompile Include="Magnification.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="OverlayWindow.cpp" />
     <ClCompile Include="PerformanceMonitor.cpp" />
     <ClCompile Include="PluginManager.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
@@ -173,6 +180,7 @@
     <ClCompile Include="TaskbarRipper.cpp" />
     <ClCompile Include="ThemeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="VulkanRenderer.cpp" />
     <ClCompile Include="WinStart.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +189,9 @@
   <ItemGroup>
     <Image Include="konanix.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fullscreen.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,8 +2,9 @@
   "dependencies": [
     "glew",
     "glfw3",
+    "nlohmann-json",
     "sdl2",
     "vcpkg-cmake",
-    "nlohmann-json"
+    "vulkan"
   ]
 }

@@ -36,18 +36,32 @@ bool konanix::initialize()
     settingsManager = new Settings();
     themeManager = new thememanager();
     hotkeyHandler = new hotkeyhandler(hInstance, this);
-    magnifier = new MagnifierManager();
+    mController = new ManipulationController(hInstance);
 
-	// load hotkey handler
+    // Load hotkey handler
     if (!hotkeyHandler->initialize()) {
         MessageBox(NULL, L"Failed to install hotkey hook", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
         return false;
     }
 
-	// load magnification API
-	HWND MagnificationHWND = nullptr;
-    if (!magnifier->Initialize(hInstance)) {
-        MessageBox(NULL, L"Failed to initialize magnification", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
+    // Initialize ManipulationController
+    ManipulationController app(hInstance);
+    if (!app.run()) return false;
+    app.InitializeManipulation();
+    mController->m_overlay->create();
+    mController->m_overlay->show();
+
+    // Initialize Vulkan renderer
+    m_renderer = std::make_unique<VulkanRenderer>(mController->m_overlay->handle());
+    try {
+        if (!m_renderer->initialize()) {
+            MessageBox(NULL, L"Failed to initialize VulkanRenderer.", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
+    }
+    catch (const std::exception& e) {
+        MessageBoxA(NULL, e.what(), "Konanix - Initialization Error", MB_OK | MB_ICONERROR);
+        return false;
     }
 
     // load settings and theme (unfinished functions)
@@ -85,7 +99,7 @@ void konanix::toggleStartMenu(bool pressed) {
 			winStart->LoadApps();
 
             // simulate screen shrinking
-            magnifier->AnimateScale(0.8F, 60);
+            m_renderer->render(0.8f);
 
 			//menuManager->showMenu(); //uncomment to enable custom start menu (unstable and unfinished)
             toggled = !toggled;
@@ -95,11 +109,11 @@ void konanix::toggleStartMenu(bool pressed) {
             //menuManager->hideMenu();
 
             // simulate screen restoring
-            magnifier->AnimateScale(1.0F, 60);
+            m_renderer->render(1.0f);
 
             // restore the screen
             //magnifier->RemoveScaleTransform();
-			magnifier->Hide(); // enable user input - hides m_hwndOverlay window
+			//magnifier->Hide(); // enable user input - hides m_hwndOverlay window
             toggled = !toggled;
 
         }
