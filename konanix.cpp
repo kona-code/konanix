@@ -1,19 +1,27 @@
 #include "konanix.h"
 #include <iostream>
 
+#include <thread>
+#include <atomic>
+
 konanix* konanix::pKonanixInstance = nullptr;
 
 konanix::konanix(HINSTANCE hInst)
     : hInstance(hInst), hwnd(nullptr),
     menuManager(nullptr), taskbarManager(nullptr),
     explorerIntegration(nullptr), performanceMonitor(nullptr),
-    settingsManager(nullptr), themeManager(nullptr), hotkeyHandler(nullptr)
+	settingsManager(nullptr), themeManager(nullptr), hotkeyHandler(nullptr), 
+	mController(nullptr), m_renderer(nullptr), toggled(false), winStart(nullptr)
 {
+    Logger::getInstance().log("");
+    Logger::getInstance().log(">------------------------------------------------[started konanix]------------------------------------------------<");
+	Logger::getInstance().logInfo("konanix instance created with HINSTANCE: " + std::to_string(reinterpret_cast<uintptr_t>(hInst)));
     // empty constructor
 }
 
 konanix::~konanix()
 {
+	Logger::getInstance().logInfo("Destroying konanix instance...");
     delete menuManager;
     delete taskbarManager;
     delete explorerIntegration;
@@ -38,35 +46,49 @@ bool konanix::initialize()
     hotkeyHandler = new hotkeyhandler(hInstance, this);
     mController = new ManipulationController(hInstance);
 
-    // Load hotkey handler
+    // load hotkey handler
+	Logger::getInstance().logInfo("Loading hotkey handler...");
     if (!hotkeyHandler->initialize()) {
+		Logger::getInstance().logError("Failed to initialize hotkey handler.");
         MessageBox(NULL, L"Failed to install hotkey hook", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
         return false;
     }
+	Logger::getInstance().logInfo("Hotkey handler loaded successfully.");
 
-    // Initialize ManipulationController
-    ManipulationController app(hInstance);
-    if (!app.run()) return false;
-    app.InitializeManipulation();
-    mController->m_overlay->create();
-    mController->m_overlay->show();
+    // initialize ManipulationController
+	Logger::getInstance().logInfo("Initializing Manipulation Controller...");
+    try {
+        mController->InitializeManipulation();
 
-    // Initialize Vulkan renderer
+        mController->m_overlay->create();
+        mController->m_overlay->show();
+
+        Logger::getInstance().logInfo("Manipulation Controller initialized successfully.");
+    }
+    catch (const std::exception ex) {Logger::getInstance().logError("Could not inialize Manupulation Controller: "+ std::string(ex.what())); }
+
+    // initialize Vulkan renderer
+	Logger::getInstance().logInfo("Initializing Vulkan Renderer...");
     m_renderer = std::make_unique<VulkanRenderer>(mController->m_overlay->handle());
     try {
         if (!m_renderer->initialize()) {
+			Logger::getInstance().logError("Failed to initialize VulkanRenderer.");
             MessageBox(NULL, L"Failed to initialize VulkanRenderer.", L"Konanix - Initialization Error", MB_OK | MB_ICONERROR);
             return false;
         }
     }
-    catch (const std::exception& e) {
-        MessageBoxA(NULL, e.what(), "Konanix - Initialization Error", MB_OK | MB_ICONERROR);
+    catch (const std::exception& ex) {
+		Logger::getInstance().logError("VulkanRenderer initialization error: " + std::string(ex.what()));
+        MessageBoxA(NULL, ex.what(), "Konanix - Initialization Error", MB_OK | MB_ICONERROR);
         return false;
     }
+	Logger::getInstance().logInfo("Vulkan Renderer initialized successfully.");
 
     // load settings and theme (unfinished functions)
+	Logger::getInstance().logInfo("Loading preferences...");
     settingsManager->load();
     themeManager->applytheme("default");
+	Logger::getInstance().logInfo("Preferences loaded successfully.");
 
     return true;
 }
@@ -74,6 +96,7 @@ bool konanix::initialize()
 // run main message loop
 void konanix::run()
 {
+	Logger::getInstance().logInfo("Started main message loop.");
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
         TranslateMessage(&msg);
@@ -83,6 +106,7 @@ void konanix::run()
 
 void konanix::shutdown()
 {
+	Logger::getInstance().logInfo("Shutting down konanix...");
     menuManager->shutdown();
 	UnregisterHotKey(NULL, 1); // unregister hotkey (WINKEY/Super)
 }
@@ -92,7 +116,7 @@ void konanix::registerHotkey()
     // additional registration
 }
 
-void konanix::toggleStartMenu(bool pressed) {
+/*void konanix::toggleStartMenu(bool pressed) {
     if (!pressed) {
         if (!toggled) {
 			//taskbarManager->hideTaskbar(); //uncomment to hide taskbar
@@ -118,8 +142,46 @@ void konanix::toggleStartMenu(bool pressed) {
 
         }
     }
-}
+}*/
 
+std::atomic<bool> isRendering(false);
+
+void konanix::toggleStartMenu(bool pressed) {
+    if (!pressed) {
+        if (!toggled) {
+            winStart->LoadApps();
+
+            if (!isRendering.exchange(true)) {
+                std::thread([this]() {
+                    try {
+                        m_renderer->render(0.8f);
+                    }
+                    catch (const std::exception& ex) {
+                        Logger::getInstance().logError("Rendering error: " + std::string(ex.what()));
+                    }
+                    isRendering = false;
+                    }).detach();
+            }
+
+            toggled = true;
+        }
+        else {
+            if (!isRendering.exchange(true)) {
+                std::thread([this]() {
+                    try {
+                        m_renderer->render(1.0f);
+                    }
+                    catch (const std::exception& ex) {
+                        Logger::getInstance().logError("Rendering error: " + std::string(ex.what()));
+                    }
+                    isRendering = false;
+                    }).detach();
+            }
+
+            toggled = false;
+        }
+    }
+}
 
 
 

@@ -19,7 +19,9 @@ public:
     int getMenuHeight() const;
     int getMenuWidth() const;
     
-	int LogPath() const;
+	std::string getLogPath() const;
+    int getFrameLimit() const;
+
 private:
     std::wstring settingsFilePath;
     void setDefaultValues();

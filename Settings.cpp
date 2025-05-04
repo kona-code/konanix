@@ -41,9 +41,13 @@ Settings::Settings() {
 
 // sets default values for the settings
 void Settings::setDefaultValues() {
-    jsonData["screen_zoom"] = 1.0;
-    jsonData["animation_time"] = 50;
-    jsonData["start_menu_config"] = "classic";
+    jsonData["screen_zoom"] = 1.0F;
+    jsonData["animation_time"] = 300;
+    jsonData["style"] = "modern";
+    jsonData["menu_height"] = 80;
+    jsonData["menu_width"] = 1200;
+    jsonData["log_path"] = "C:\\";
+    jsonData["fps_render_limit"] = 60;
 }
 
 // loads the settings file
@@ -87,38 +91,77 @@ bool Settings::save() {
 
 // retrieves the screen zoom setting
 float Settings::getScreenZoom() const {
-    if (jsonData.contains("screen_zoom"))
+    if (jsonData.contains("screen_zoom")) {
         return jsonData["screen_zoom"].get<float>();
-    return 1.0f;
+    }
+    else {
+        std::cerr << "'screen_zoom' not found in settings, using default value." << std::endl;
+        return 1.0F; // default value
+    }
 }
 
 // retrieves the animation time setting
 int Settings::getAnimationTime() const {
-    if (jsonData.contains("animation_time"))
+    if (jsonData.contains("animation_time")) {
         return jsonData["animation_time"].get<int>();
-    return 300;
+    }
+    else {
+        std::cerr << "'animation_time' not found in settings, using default value." << std::endl;
+        return 300; // default value
+    }
 }
 
 // retrieves the start menu configuration setting
 std::string Settings::getStartMenuConfig() const {
-    if (jsonData.contains("start_menu_config"))
-        return jsonData["start_menu_config"].get<std::string>();
-    return "classic";
+    if (jsonData.contains("style")) {
+        return jsonData["style"].get<std::string>();
+    }
+    else {
+        std::cerr << "'style' not found in settings, using default value." << std::endl;
+        return "modern"; // default value 
+    }
 }
 
 // retrieves the menu height setting
 int Settings::getMenuHeight() const {
-    return 80; // default value
+    if (jsonData.contains("menu_height")) {
+        return jsonData["menu_height"].get<int>();
+    }
+    else {
+        std::cerr << "'menu_height' not found in settings, using default value." << std::endl;
+        return 80; // default value
+    }
 }
 
 // retrieves the menu width setting
 int Settings::getMenuWidth() const {
-    return 1200; // default value
+    if (jsonData.contains("menu_width")) {
+        return jsonData["menu_width"].get<int>();
+    }
+    else {
+        std::cerr << "'menu_width' not found in settings, using default value." << std::endl;
+        return 1200; // default value
+    }
 }
 
 // retrieves the log path
-int Settings::LogPath() const {
-    if (jsonData.contains("menu_width"))
-        return jsonData["menu_width"].get<int>();
-    return 1200; // default value
+std::string Settings::getLogPath() const {
+    if (jsonData.contains("log_path")) {
+        return jsonData["log_path"].get<std::string>();
+    }
+    else {
+		std::cerr << "'log_path' not found in settings, using default value." << std::endl;
+		return "C:\\"; // default value 
+    }
+}
+
+// retrieves fps limit setting
+int Settings::getFrameLimit() const {
+    if (jsonData.contains("fps_render_limit")) {
+        return jsonData["fps_render_limit"].get<int>();
+    }
+    else {
+		std::cerr << "'fps_render_limit' not found in settings, using default value." << std::endl;
+        return 60; // default value
+    }
 }

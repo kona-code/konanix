@@ -34,14 +34,14 @@ private:
     Settings* settingsManager;
     thememanager* themeManager;
     hotkeyhandler* hotkeyHandler;
-	ManipulationController* mController;
+    ManipulationController* mController;
     WinStart* winStart;
 
     void createStartMenu();
     void closeStartMenu();
     void manipulateExplorerMenu(bool hide);
 
-	bool toggled;
+    bool toggled;
 
     std::unique_ptr<VulkanRenderer> m_renderer;
 
